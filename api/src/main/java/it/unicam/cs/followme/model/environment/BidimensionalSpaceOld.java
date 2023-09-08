@@ -3,30 +3,29 @@ package it.unicam.cs.followme.model.environment;
 import it.unicam.cs.followme.model.common.TwoDimensionalPoint;
 import it.unicam.cs.followme.model.common.Utilities;
 import it.unicam.cs.followme.model.programmables.ProgrammableObject;
-import it.unicam.cs.followme.model.programmables.Robot;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Callable;
 import java.util.stream.Collectors;
 
 /**
  * Rappresenta un ambiente bidimensionale all'interno del quale possono muoversi differenti
  * oggetti programmabili e dove trovano posizione oggetti statici fissi. *
- * @param <Shape> rappresenta le possibili forme fisse nell'ambiente
- * @param <Robot> rappresenta i possibili oggetti programmabili
+ * @param <S> rappresenta le possibili forme fisse nell'ambiente
+ * @param <P> rappresenta i possibili oggetti programmabili
  */
-public class TestBidimensionalSpace /*implements Environment<Shape, Robot>*/{
+public class BidimensionalSpace<S extends Shape,
+                                P extends ProgrammableObject> implements Environment<S, P>{
 
-    private  static List<Callable<Robot>> programmablesInSpace;
-    private  static List<Shape> shapesInSpace;
+    private  List<P> programmablesInSpace;
+    private  List<S> shapesInSpace;
 
     /**
      * Costruisce uno spazio bidimensionale vuoto
      */
-    public TestBidimensionalSpace() {
-        this.programmablesInSpace = new ArrayList<Callable<Robot>>();
-        this.shapesInSpace        = new ArrayList<Shape>();
+    public BidimensionalSpace() {
+        this.programmablesInSpace = new ArrayList<P>();
+        this.shapesInSpace        = new ArrayList<S>();
     }
 
     /**
@@ -34,7 +33,7 @@ public class TestBidimensionalSpace /*implements Environment<Shape, Robot>*/{
      * @param programmables una lista contenente una serie di programmabili
      * @param shapes una lista contenente una serie di forme statiche.
      */
-    public TestBidimensionalSpace(List<Callable<Robot>> programmables, List<Shape> shapes) {
+    public BidimensionalSpace(List<P> programmables, List<S> shapes) {
         this.programmablesInSpace = programmables;
         this.shapesInSpace        = shapes;
     }
@@ -43,15 +42,15 @@ public class TestBidimensionalSpace /*implements Environment<Shape, Robot>*/{
      * Ritorna una collezione di tutti gli oggetti attualmente presenti nello spazio
      * @return programmableOnSpace tutti gli oggetti programmabili nello spazio
      */
-
-    public static List<Callable<Robot>> getProgrammableInSpace() {return programmablesInSpace;}
+    @Override
+    public List<P> getProgrammableInSpace() {return programmablesInSpace;}
 
     /**
      * Ritorna una collezione di tutti gli oggetti statici attualmente presenti nello spazio
      * @return shapesOnSpace tutti gli oggetti statici nello spazio
      */
-
-    public static List<Shape> getShapesInSpace() {
+    @Override
+    public List<S> getShapesInSpace() {
         return shapesInSpace;
     }
 
@@ -59,7 +58,8 @@ public class TestBidimensionalSpace /*implements Environment<Shape, Robot>*/{
      * Aggiunge un oggetto programmabile all'ambiente
      * @param programmable un oggetto di tipo programmabile
      */
-    public void addProgrammableToSpace(Robot programmable){
+    @Override
+    public void addProgrammableToSpace(P programmable){
         this.programmablesInSpace.add(programmable);
     };
 
@@ -67,21 +67,26 @@ public class TestBidimensionalSpace /*implements Environment<Shape, Robot>*/{
      * Aggiunge un oggetto foram all'ambiente
      * @param shape un oggetto di tipo forma.
      */
-    public  void addShapesToSpace(Shape shape){
+    @Override
+    public  void addShapesToSpace(S shape){
         this.shapesInSpace.add(shape);
     }
 
-//    public List<Robot> getNeighbours(TwoDimensionalPoint positionToCheck, String labelToCheck, Double range){
-//        return this.programmablesInSpace.parallelStream()
-//                .filter(programmable->programmable.getLabel() == labelToCheck)
-//                .filter(programmable-> {
-//                    TwoDimensionalPoint center = (TwoDimensionalPoint) programmable.getPosition();
-//                    return Utilities.checkPointInsideCircle(positionToCheck, center, range);}
-//                ).collect(Collectors.toList());
+
+
+//    public static List<ProgrammableObject> getNeighbours(TwoDimensionalPoint positionToCheck, String labelToCheck, Double range){
+//        List<ProgrammableObject> neighbours = this.programmablesInSpace.parallelStream();
+//        neighbours.parallelStream()
+//               .filter(programmable->programmable.getLabel() == labelToCheck)
+//               .filter(programmable-> {
+//                   TwoDimensionalPoint center = (TwoDimensionalPoint) programmable.getPosition();
+//                   return Utilities.checkPointInsideCircle(positionToCheck, center, range);}
+//               ).collect(Collectors.toList());
+//        return neighbours;
 //    }
 
     //boolean
-    public List<Shape> getShapesWhereIamIn(TwoDimensionalPoint positionToCheck, String labelToCheck){
+    public List<S> getShapesWhereIamIn(TwoDimensionalPoint positionToCheck, String labelToCheck){
         return this.shapesInSpace.parallelStream()
                 .filter(shape->shape.getLabel() == labelToCheck)
                 .filter(shape->shape.isInternal(positionToCheck))
