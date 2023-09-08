@@ -1,0 +1,14 @@
+
+.labelStyle{-fx-text-fill: #222224;
+            -fx-font-size: 25px}
+
+#unicamLogoContainer{
+    -fx-background-image: "@../images/Button-Next-icon-2.png";
+    -fx-border-color: #000000;
+    -fx-border-width: 3px;
+}
+
+.secondaryColor{-fx-text-fill: #949494
+}
+.smallLabel{ -fx-font-size: 18px}
+.bigLabel{ -fx-font-size: 30px}

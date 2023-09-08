@@ -1,0 +1,4 @@
+_circleLable CIRCLE 2.0 1.0 1.0 
+_circleLable CIRCLE 2.0 1.0 1.0 
+_label RECTANGLE 3.5 2 1 1
+_circleLable CIRCLE 2.0 1.0 1.0 
