@@ -3,6 +3,7 @@ package it.unicam.cs.followme.model.language;
 import it.unicam.cs.followme.model.environment.BidimensionalSpace;
 import it.unicam.cs.followme.model.programmables.ProgrammableObject;
 import it.unicam.cs.followme.model.programmables.Robot;
+import it.unicam.cs.followme.model.programmables.RobotState;
 import it.unicam.cs.followme.model.timeManagment.SimulationTimer;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -44,20 +45,42 @@ public class ProgramExecutor{
                 String instruction = currentCommand.getInstruction().trim().replace(" ", "").toLowerCase();
 
                 switch (instruction) {
-                    case "repeat"   -> currentCommandIndex = loops.repeat(currentCommand.getParameter(), currentCommandIndex);
-                    case "doforever"-> currentCommandIndex = loops.doForever(currentCommandIndex);
-                    case "done"     -> currentCommandIndex = loops.done(currentCommandIndex);
-                    case "until"    -> currentCommandIndex = loops.until(currentCommandIndex, currentCommand.getParameter(), environment.getShapesInSpace(), robot.getPosition());
-                    case "follow"   -> RobotLanguageAtomicConstructs.follow(currentCommand.getMultipleParameters(), environment, this.robot);
-                    default         -> callMethod(instruction, currentCommand.getParameter());
+                    case "repeat"   -> handleRepeatCommand(currentCommand);
+                    case "doforever"-> handleDoForeverCommand(currentCommand);
+                    case "done"     -> handleDoneCommand(currentCommand);
+                    case "until"    -> handleUntilCommand(currentCommand);
+                    case "follow"   -> handleFollowCommand(currentCommand);
+                    default         -> handleDefaultCommand(instruction, currentCommand);
                 }
             }
             currentTime++;
         }
-        //todo remove print
-        System.out.println("SWITCH TERMINATO");
     }
 
+    private void handleRepeatCommand(ProgramCommand command) {
+        currentCommandIndex = loops.repeat(command.getParameter(), currentCommandIndex);
+    }
+
+    private void handleDoForeverCommand(ProgramCommand command) {
+        currentCommandIndex = loops.doForever(currentCommandIndex);
+    }
+
+    private void handleDoneCommand(ProgramCommand command) {
+        currentCommandIndex = loops.done(currentCommandIndex);
+    }
+
+    private void handleUntilCommand(ProgramCommand command) {
+        currentCommandIndex = loops.until(currentCommandIndex, command.getParameter(), environment.getShapesInSpace(), robot.getPosition());
+    }
+
+    private void handleFollowCommand(ProgramCommand command) {
+        RobotLanguageAtomicConstructs.follow(command.getMultipleParameters(), environment, this.robot);
+    }
+
+    private void handleDefaultCommand(String instruction, ProgramCommand command) {
+        callMethod(instruction, command.getParameter());
+        takeMemory(this.currentTime);
+    }
     /**
      * Richiama il metodo appropriato in relazione all'istruzione passata come argomento.
      * @param instruction istruzione da eseguire;
@@ -74,5 +97,15 @@ public class ProgramExecutor{
        } catch (NoSuchMethodException e) {
             throw new RuntimeException(e);
        }
+    }
+
+    /**
+     * Memorizza le istruzioni avvenute nella memoria del robot.
+     * @param time
+     */
+    private void takeMemory(int time){
+        this.robot.getMemory().recordState(time, new RobotState(this.robot.getPosition(),
+                                                                 this.robot.getDirection(),
+                                                                 this.robot.getLabel()));
     }
 }

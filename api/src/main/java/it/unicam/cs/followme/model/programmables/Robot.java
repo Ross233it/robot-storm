@@ -14,6 +14,7 @@ public class Robot implements ProgrammableObject<RobotProgram, TwoDimensionalPoi
     TwoDimensionalPoint position;
     String label;
     SpeedVector direction;
+    RobotMemory memory;
 
     /**
      * Crea un robot in posizione randomica inclusa nel range
@@ -23,6 +24,7 @@ public class Robot implements ProgrammableObject<RobotProgram, TwoDimensionalPoi
         this.position = new TwoDimensionalPoint(range);
         this.label = "Init";
         this.robotId = robotId;
+        this.memory = new RobotMemory();
     }
 
     /**
@@ -33,6 +35,7 @@ public class Robot implements ProgrammableObject<RobotProgram, TwoDimensionalPoi
         this.position = position;
         this.label = "Init";
         this.robotId = robotId;
+        this.memory = new RobotMemory();
     }
 
     /**
@@ -89,4 +92,8 @@ public class Robot implements ProgrammableObject<RobotProgram, TwoDimensionalPoi
      * @return  label la label del robot
      */
     public int getId(){return robotId;}
+
+    public RobotMemory getMemory() {
+        return memory;
+    }
 }

@@ -1,9 +1,9 @@
 package it.unicam.cs.followme.controller;
 
-import it.unicam.cs.followme.model.common.TwoDimensionalPoint;
+import it.unicam.cs.followme.io.ShapeBuilder;
+import it.unicam.cs.followme.io.ShapeLoader;
+import it.unicam.cs.followme.io.ShapesCreator;
 import it.unicam.cs.followme.model.environment.BidimensionalSpace;
-import it.unicam.cs.followme.model.environment.StaticCircle;
-import it.unicam.cs.followme.model.environment.StaticRectangle;
 import it.unicam.cs.followme.model.environment.Shape;
 import it.unicam.cs.followme.model.language.RobotProgram;
 import it.unicam.cs.followme.model.programmables.ProgrammableObject;
@@ -11,14 +11,14 @@ import it.unicam.cs.followme.model.programmables.Robot;
 import it.unicam.cs.followme.model.programmables.RobotActivities;
 import it.unicam.cs.followme.utilities.FollowMeParser;
 import it.unicam.cs.followme.utilities.FollowMeParserException;
-import it.unicam.cs.followme.utilities.ShapeData;
 
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
-import java.util.ListIterator;
+import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -54,14 +54,16 @@ public class Controller<S extends Shape, P extends ProgrammableObject> {
 
         List<Robot> currentRobots = generateRobotsRandomly(1,  currentProgram, 40.0);
 
-        List<Shape> currentShapes = shapes(environmentPath);
+        ShapeBuilder shapeCreator = new ShapesCreator();
 
-        this.environment = new BidimensionalSpace(currentRobots, currentShapes);
+        ShapeLoader shapeLoader = new ShapeLoader(parser, environmentPath, shapeCreator);
 
-//        TwoDimensionalPoint testPoint = new TwoDimensionalPoint(15.0);
-//        List<Robot> testList = environment.getNeighbours(testPoint, "Init",25.0);
-//        testList.stream().forEach(e->System.out.println(e.getId()));
+        List<Shape> loadedShapes = shapeLoader.loadShapes();
 
+        this.environment = new BidimensionalSpace(currentRobots, loadedShapes);
+
+//        Map<Integer, List<Robot>> history = new HashMap<>();
+//        history.put(new Environment<Shape, Robot>(environment))
         SimulationTimer timer = new SimulationTimer(1000);
             timer.start();
     }
@@ -98,7 +100,6 @@ public class Controller<S extends Shape, P extends ProgrammableObject> {
         for(int t=0; t<objectNumber; t++){allRobots.add(new Robot(range, t));}
         return allRobots;
     }
-
 
     /**
      * Recupera il programma da un file di testo in posizione programPath e
@@ -138,45 +139,9 @@ public class Controller<S extends Shape, P extends ProgrammableObject> {
             executor.shutdown();
     }
 
-    /**
-     * da sistemare
-     * @param environmentPath
-     */
-    private List<Shape> shapes(Path environmentPath){
-    //FollowMeParser parser = new FollowMeParser(program);
-        List<ShapeData> environmentShapes = null;
-        try {
-            environmentShapes = parser.parseEnvironment(environmentPath);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (FollowMeParserException e) {
-            throw new RuntimeException(e);
-        }
-        List<Shape> shapeList = new ArrayList<Shape>();
-        ListIterator<ShapeData> iterator = environmentShapes.listIterator();
-        while(iterator.hasNext()) {
-            ShapeData currentShape = iterator.next();
-            TwoDimensionalPoint position = new TwoDimensionalPoint(currentShape.args()[0], currentShape.args()[1]);
-            if(currentShape.shape().equals("CIRCLE")){
-                //todo remove print
-                System.out.println("HO CREATO UN CERCHIO NELLA LISTA");
-                shapeList.add(new StaticCircle(position, currentShape.label(), currentShape.args()[2]));
-            }else   if(currentShape.shape().equals("RECTANGLE")) {
-                //todo remove print
-                System.out.println("HO CREATO UN RETTANGOLO NELLA LISTA");
-                shapeList.add(new StaticRectangle(position, currentShape.label(), currentShape.args()[2], currentShape.args()[3]));
-            }
-            //todo remove print
-            System.out.println("metodo shapes");
-            System.out.println(currentShape.label() + " " + currentShape.shape() + " " + currentShape.args()[0] );
-        }
-    return  shapeList;
-    }
-
     public RobotProgram getProgram(){return this.program;}
 
     public List<Robot>getRobots(){ return this.environment.getProgrammableInSpace();}
-
 
     public List<Shape>getShapes(){ return this.environment.getShapesInSpace();}
 

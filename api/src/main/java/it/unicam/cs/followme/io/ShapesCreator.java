@@ -6,7 +6,7 @@ import it.unicam.cs.followme.model.environment.StaticCircle;
 import it.unicam.cs.followme.model.environment.StaticRectangle;
 import it.unicam.cs.followme.utilities.ShapeData;
 
-public class CreateShapes implements ShapeBuilder{
+public class ShapesCreator implements ShapeBuilder{
     @Override
     public Shape createShape(ShapeData shapeData) {
         TwoDimensionalPoint position = new TwoDimensionalPoint(shapeData.args()[0], shapeData.args()[1]);
