@@ -29,18 +29,26 @@ public class BidimensionalSpace<S extends Shape, P extends ProgrammableObject> i
      * @param shapes una lista contenente una serie di forme statiche.
      */
     public BidimensionalSpace(List<P> programmables, List<S> shapes) {
+        this();
         this.programmablesInSpace = programmables;
         this.shapesInSpace        = shapes;
-        this.instance = this;
     }
 
     /**
-     * Ritorna un'istanza della classe ambiente.
+     * Costruisce uno spazio bidimensionale privo di oggetti.
+     */
+    public BidimensionalSpace() {
+        this.programmablesInSpace = new ArrayList<>();
+        this.shapesInSpace        = new ArrayList<>();
+    }
+
+    /**
+     * Ritorna un'istanza della classe ambiente.Singleton implementation
      * @return
      */
     public static synchronized BidimensionalSpace getInstance() {
         if (instance == null)
-            throw new RuntimeException("L'istanza dell'ambiente non è disponibile");
+            instance = new BidimensionalSpace();
         return instance;
     }
     /**

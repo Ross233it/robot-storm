@@ -1,10 +1,7 @@
 package it.unicam.cs.followme.model.environment;
 
-import it.unicam.cs.followme.model.programmables.ProgrammableObject;
-
-import java.util.Collection;
 import java.util.List;
-import java.util.Map;
+
 
 /**
  * L'interfaccia astrae l'ambiente illimitato all'interno del quale sono posizionati
@@ -14,9 +11,7 @@ import java.util.Map;
  * @param <S> oggetti di tipo Shape
  * @param <P> oggetti di tipo Programmable
  */
-
 public interface Environment<S, P>{
-
     /**
      * Ritorna una lista degli oggetti programmabili presenti nell'ambiente.
      * @return
@@ -28,6 +23,5 @@ public interface Environment<S, P>{
      * @return
      */
     List<S> getShapesInSpace();
-
 }
 

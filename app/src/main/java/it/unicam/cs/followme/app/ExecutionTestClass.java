@@ -71,7 +71,7 @@ public class ExecutionTestClass /*extends Application */{
 
         //stampa comandi
      //   RobotProgram myProgram = newController.getProgram();
-       // myProgram.programOutput().stream().forEach(s->System.out.println(s.getInstruction()));
+       // myProgram.programOutput().stream().forEach(ShapeBuilder->System.out.println(ShapeBuilder.getInstruction()));
 //
     }
 }

@@ -50,7 +50,6 @@ public class Controller<S extends Shape, P extends ProgrammableObject> {
         this.program         = new RobotProgram();
         this.parser          = new FollowMeParser(program);
 
-
         RobotProgram currentProgram = generateRobotProgram(programPath);
 
         List<Robot> currentRobots = generateRobotsRandomly(1,  currentProgram, 40.0);

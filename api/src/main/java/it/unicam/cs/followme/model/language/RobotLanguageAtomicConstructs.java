@@ -8,7 +8,6 @@ import it.unicam.cs.followme.model.environment.BidimensionalSpace;
 import it.unicam.cs.followme.model.programmables.ProgrammableObject;
 import it.unicam.cs.followme.model.programmables.Robot;
 
-import java.util.List;
 import java.util.stream.Stream;
 
 /**

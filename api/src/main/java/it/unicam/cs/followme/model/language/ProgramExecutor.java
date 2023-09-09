@@ -44,12 +44,12 @@ public class ProgramExecutor{
                 String instruction = currentCommand.getInstruction().trim().replace(" ", "").toLowerCase();
 
                 switch (instruction) {
-                    case "repeat"   -> currentCommandIndex = loops.repeat(currentCommand.getParameters(), currentCommandIndex);
+                    case "repeat"   -> currentCommandIndex = loops.repeat(currentCommand.getParameter(), currentCommandIndex);
                     case "doforever"-> currentCommandIndex = loops.doForever(currentCommandIndex);
                     case "done"     -> currentCommandIndex = loops.done(currentCommandIndex);
-                    case "until"    -> currentCommandIndex = loops.until(currentCommandIndex, currentCommand.getParameters(), environment.getShapesInSpace(), robot.getPosition());
+                    case "until"    -> currentCommandIndex = loops.until(currentCommandIndex, currentCommand.getParameter(), environment.getShapesInSpace(), robot.getPosition());
                     case "follow"   -> RobotLanguageAtomicConstructs.follow(currentCommand.getMultipleParameters(), environment, this.robot);
-                    default         -> callMethod(instruction, currentCommand.getParameters());
+                    default         -> callMethod(instruction, currentCommand.getParameter());
                 }
             }
             currentTime++;

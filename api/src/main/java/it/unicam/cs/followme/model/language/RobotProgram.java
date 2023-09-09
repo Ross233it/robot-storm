@@ -11,7 +11,8 @@ import java.util.ArrayList;
  */
 public class RobotProgram implements FollowMeParserHandler{
 
-    public static ArrayList<ProgramCommand> commandList;
+
+    public ArrayList<ProgramCommand> commandList = new ArrayList<ProgramCommand>();
 
     @Override
     public void parsingStarted(){
@@ -53,7 +54,8 @@ public class RobotProgram implements FollowMeParserHandler{
 
     @Override
     public void continueCommand(int s) {
-        while(s>0){this.commandList.add(new ProgramCommand("MOVE",null)); s--;}
+        Object arg = null;
+        while(s>0){this.commandList.add(new ProgramCommand("MOVE",arg)); s--;}
     }
 
     @Override
@@ -83,4 +85,12 @@ public class RobotProgram implements FollowMeParserHandler{
     public ArrayList<ProgramCommand> programOutput(){
         return this.commandList;
     }
+
+    /**
+     * Aggiunge uno specifico comando al programma
+     * @param command un {@link ProgramCommand} da aggiungere
+     */
+    public void addCommand(ProgramCommand command){this.commandList.add(command);}
+
+    public void clearProgram(){this.commandList.clear();}
 }

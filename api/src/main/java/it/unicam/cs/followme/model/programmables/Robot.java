@@ -4,8 +4,6 @@ import it.unicam.cs.followme.model.common.SpeedVector;
 import it.unicam.cs.followme.model.common.TwoDimensionalPoint;
 import it.unicam.cs.followme.model.language.*;
 
-import java.util.concurrent.Callable;
-
 /**
  * Questa classe rappresenta un oggetto programmabile di tipo robot in grado
  * di modificare la propria posizione e la propria condizione.
@@ -28,6 +26,16 @@ public class Robot implements ProgrammableObject<RobotProgram, TwoDimensionalPoi
     }
 
     /**
+     * Crea un robot in posizione specificata come parametro
+     * @param position la posizione del robot
+     */
+    public Robot(TwoDimensionalPoint position, Integer robotId) {
+        this.position = position;
+        this.label = "Init";
+        this.robotId = robotId;
+    }
+
+    /**
      * Rileava la posizione attuale del robot
      * @return position il punto del cartesiano in cui si trova il robot
      */
@@ -45,15 +53,6 @@ public class Robot implements ProgrammableObject<RobotProgram, TwoDimensionalPoi
     public void setPosition(TwoDimensionalPoint position) {
         this.position = position;
     }
-
-//    /**
-//     * Incrementa la posizione del robot nello spazio bidimensionale
-//     * @param speedVector oggetto che individua una direzione e una velocità.
-//     */
-//    public void changePosition(SpeedVector speedVector){
-//        this.direction = speedVector;
-//        position.increasePosition(speedVector.getX(), speedVector.getY());
-//    }
 
     /**
      * Modifica la label di condizione del robot corrente
@@ -90,5 +89,4 @@ public class Robot implements ProgrammableObject<RobotProgram, TwoDimensionalPoi
      * @return  label la label del robot
      */
     public int getId(){return robotId;}
-
 }

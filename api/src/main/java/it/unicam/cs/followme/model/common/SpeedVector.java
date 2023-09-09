@@ -1,5 +1,7 @@
 package it.unicam.cs.followme.model.common;
 
+import java.util.Objects;
+
 /**
  * Estende la classe TwoDimensionalPoint ed ha la responsabilità di rappresentare un vettore di movimento.
  * Definisce una direzione di movimento caratterizzata da coordinate cartesiane comprese
@@ -18,7 +20,7 @@ public class SpeedVector extends TwoDimensionalPoint {
      */
     public SpeedVector(Double dirX, Double dirY, double speed) {
         super(dirX, dirY);
-        if(dirX > 1 || dirX < -1 || dirY > 1 || dirY < -1)
+        if(dirX > 1 || dirX < -1 || dirY > 1 || dirY < -1 ||(dirY ==0.0 && dirX ==0.0))
             throw new IllegalArgumentException
                     ("Il valore della direzione non è nei valori consentiti");
         this.speed = speed;
@@ -30,5 +32,24 @@ public class SpeedVector extends TwoDimensionalPoint {
      */
     public Double getSpeed(){
         return speed;
+    }
+
+    /**
+     * Aggiunge il parametro speed al metodo equals ereditato da TwoDimensionalPosition
+     * @param o Oggetto da confrontare con l'oggetto corrente
+     * @return True se o e lo SpeedVector corrente sono uguali.
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        SpeedVector that = (SpeedVector) o;
+        return Double.compare(speed, that.speed) == 0;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), speed);
     }
 }

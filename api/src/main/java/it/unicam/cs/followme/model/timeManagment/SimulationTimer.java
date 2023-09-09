@@ -2,7 +2,6 @@ package it.unicam.cs.followme.model.timeManagment;
 
 /**
  * La classe timer ha la responsabilità di scandire il tempo nell'ambiente
- * valorizza una variabile Time time che tiene traccia delle unità di tempo trascorse.
  */
 public class SimulationTimer extends Thread {
     private int currentTime;
@@ -22,14 +21,9 @@ public class SimulationTimer extends Thread {
      */
     @Override
     public void run() {
-            try {Thread.sleep(timeSpeedInMillis);
-                 currentTime++;
-                 //todo remove print
-                System.out.println("Thread is running " + currentTime);
-            }
+            try {Thread.sleep(timeSpeedInMillis); currentTime++;}
             catch (InterruptedException e) {throw new RuntimeException(e);}
-        }
-
+    }
 
     /**
      * Ritorna il tempo registrato dal timer corrente, il tempo è espresso in numeri
@@ -38,5 +32,9 @@ public class SimulationTimer extends Thread {
      */
     public int getTime(){return this.currentTime;}
 
+    /**
+     * Setta la velocità di esecuzione della simulazione espressa in millisecondi.
+     * @param timeUnit velocità della simulazione in millisecondi.
+     */
     public void setTimeUnit(Integer timeUnit){this.timeSpeedInMillis = timeUnit;}
 }
