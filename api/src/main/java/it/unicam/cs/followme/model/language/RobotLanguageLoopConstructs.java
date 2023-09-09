@@ -34,14 +34,7 @@ public class RobotLanguageLoopConstructs {
 
 
     public Integer until(Integer currentCommandIndex, Object label, List<Shape>shapes, TwoDimensionalPoint positionToCheck){
-        //todo remove print
-        //System.out.println("INIZIO UNTIL");
         this.untilCommandIndex = currentCommandIndex;
-        //if(checkShape(label, shapes, positionToCheck))
-            //todo remove print
-            //System.out.println("true");
-        //todo remove print
-        //System.out.println(currentCommandIndex+1);
         return currentCommandIndex+1;
     }
 
@@ -85,21 +78,13 @@ public class RobotLanguageLoopConstructs {
     }
 
 
-    private boolean checkShape(Object label,
+    private static boolean checkShape(Object label,
                                List<Shape>shapes,
                                TwoDimensionalPoint positionToCheck){
-        //todo remove print
-        //System.out.println("CHEK SHAPE LANCIATO");
         String labelToCheck = Utilities.fromObjectToString(label);
-        //System.out.println("IO SONO label to check" + labelToCheck + shapes.toArray().length);
-
-        boolean test = shapes.stream()
+        return   shapes.stream()
                 .filter(s->s.getLabel().equals(labelToCheck))
                 .filter(s->s.isInternal(positionToCheck))
                 .findFirst().isPresent();
-        //todo remove print
-        //System.out.println("IO SONO TEST" + test);
-        return test;
     }
-
 }

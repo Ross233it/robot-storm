@@ -12,77 +12,51 @@ import it.unicam.cs.followme.model.programmables.RobotActivities;
 import it.unicam.cs.followme.utilities.FollowMeParser;
 import it.unicam.cs.followme.utilities.FollowMeParserException;
 
-
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
-import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import it.unicam.cs.followme.model.timeManagment.SimulationTimer;
-import it.unicam.cs.followme.model.environment.Environment;
+
 public class Controller<S extends Shape, P extends ProgrammableObject> {
 
-    private final Path programPath;
-
-    private final Path environmentPath;
-
-    private final RobotProgram program;
-
+    private  RobotProgram program;
     private final FollowMeParser parser ;
-
     private BidimensionalSpace environment;
 
-    private Supplier<Environment<S, P>> environmentBuilder;
-
-
     /**
-     * genera un controller con programma e ambiente di default     *
+     * Genera un controller
      */
-    public Controller(Path programPath, Path environmentPath){
-        this.programPath     = programPath;
-        this.environmentPath = environmentPath;
+    public Controller(){
         this.program         = new RobotProgram();
         this.parser          = new FollowMeParser(program);
-
-        RobotProgram currentProgram = generateRobotProgram(programPath);
-
-        List<Robot> currentRobots = generateRobotsRandomly(1,  currentProgram, 40.0);
-
-        ShapeBuilder shapeCreator = new ShapesCreator();
-
-        ShapeLoader shapeLoader = new ShapeLoader(parser, environmentPath, shapeCreator);
-
-        List<Shape> loadedShapes = shapeLoader.loadShapes();
-
-        this.environment = new BidimensionalSpace(currentRobots, loadedShapes);
-
-//        Map<Integer, List<Robot>> history = new HashMap<>();
-//        history.put(new Environment<Shape, Robot>(environment))
-        SimulationTimer timer = new SimulationTimer(1000);
-            timer.start();
     }
 
+    /**
+     * Inizializza gli elementi oggetto della simulazione
+     * @param robotNumber il numero dei robot da generare entro un raggio +/- range
+     */
+    public void simulationSetup(Integer robotNumber,  Double range, Path programPath, Path environmentPath){
 
+        List<Robot> currentRobots = generateRobotsRandomly(robotNumber,  program, range);
+        List<Shape> loadedShapes = shapesSetup(environmentPath);
+        this.program         = generateRobotProgram(programPath);
+        this.environment = new BidimensionalSpace(currentRobots, loadedShapes);
+    }
 
-    public void runSimulation(Integer robotNumber, Integer timeUnit){
-//        RobotProgram currentProgram = generateRobotProgram(this.programPath);
-//
-//        List<Callable<Robot>> currentRobots = generateRobotsRandomly(robotNumber,  currentProgram, 100.0);
-//
-//        List<Shape> currentShapes = shapes(this.environmentPath);
-//
-//        this.environment = new BidimensionalSpace(currentRobots, currentShapes);
-//
-//        lunchRobots(currentRobots);
-//        //TODO Implementare la possibilità di cambiare il tempo
-//        SimulationTimerOLD timer = new SimulationTimerOLD(timeUnit);
-//        timer.start();
+    /**
+     * Avvia il flusso di esecuzione della simulaizone.
+     * @param timeUnit la velocità in millisecondi della simulazione
+     * @param timeUnit
+     */
+    public void runSimulation(Integer timeUnit){
+        SimulationTimer timer = new SimulationTimer(timeUnit);
+        timer.start();
+        launchRobots();
     }
 
     /**
@@ -93,7 +67,7 @@ public class Controller<S extends Shape, P extends ProgrammableObject> {
      * @param range limite di posizionamento dei robot nello spazio.
      * @return allRobots lista dei robots creati
      */
-    public List<Robot> generateRobotsRandomly(Integer objectNumber,
+    private List<Robot> generateRobotsRandomly(Integer objectNumber,
                                               RobotProgram program,
                                               Double range){
         List<Robot> allRobots = new ArrayList<>();
@@ -139,10 +113,22 @@ public class Controller<S extends Shape, P extends ProgrammableObject> {
             executor.shutdown();
     }
 
+    /**
+     * Genera le forme geometriche statiche per l'inserimento nell'environment
+     * @return
+     */
+    private List<Shape> shapesSetup(Path environmentPath){
+        ShapeBuilder shapeCreator = new ShapesCreator();
+        ShapeLoader shapeLoader = new ShapeLoader(parser, environmentPath, shapeCreator);
+        return shapeLoader.loadShapes();
+    }
+
     public RobotProgram getProgram(){return this.program;}
 
     public List<Robot>getRobots(){ return this.environment.getProgrammableInSpace();}
 
     public List<Shape>getShapes(){ return this.environment.getShapesInSpace();}
+
+
 
 }

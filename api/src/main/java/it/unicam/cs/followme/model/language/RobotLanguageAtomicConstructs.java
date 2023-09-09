@@ -68,6 +68,7 @@ public class RobotLanguageAtomicConstructs<A extends ProgramCommand, P extends P
      */
     public static <P extends ProgrammableObject>  String signal(Object label, P programmable){
         String activeLabel = Utilities.fromObjectToString(label);
+
         programmable.setLabel(activeLabel);
         return activeLabel;
     }

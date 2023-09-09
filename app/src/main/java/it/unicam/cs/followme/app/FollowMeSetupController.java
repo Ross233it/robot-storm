@@ -27,15 +27,15 @@ public class FollowMeSetupController {
     Alert a = new Alert(Alert.AlertType.NONE);
 
     @FXML
-    private Button progButton;
+    private Button programLoaderButton;
     @FXML
-    private Button envButton;
+    private Button environmentLoaderButton;
     @FXML
-    private Button startButton;
+    private Button simulationStartButton;
     @FXML
-    private TextField nBotText;
+    private TextField robotNumberField;
     @FXML
-    private Text textProg;
+    private TextField timeUnitField;
     @FXML
     private Text textEnv;
 
@@ -43,7 +43,7 @@ public class FollowMeSetupController {
      *Consente il caricamento e la memorizzazione del file di ambiente
      */
     @FXML
-    public void selectProgFile(Event e){
+    public void selectRobotProgram(Event e){
         this.programFile=openFileChooser("Apri programma",e);
     }
 
@@ -51,10 +51,38 @@ public class FollowMeSetupController {
      *Consente il caricamento e la memorizzazione del file di ambiente
      */
     @FXML
-    public void selectEnvFile(Event e){
+    public void selectEnvironmentFile(Event e){
         this.environmentFile=openFileChooser("Apri File di Ambiente", e);
     }
 
+
+    @FXML
+    public void startSimulation(Event event) throws IOException{
+        try{
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/FollowMeApp.fxml"));
+            Parent parent = loader.load();
+            FollowMeAppController viewController = loader.getController();
+            viewController.simSetup(this.programFile,
+                                    this.environmentFile,
+                                    Integer.parseInt(this.robotNumberField.getText()),
+                                    Integer.parseInt(this.timeUnitField.getText()));
+            Stage stage = (Stage) (((Node)event.getSource()).getScene().getWindow());
+            Scene scene = new Scene(parent,800,800);
+            stage.setScene(scene);
+            stage.setTitle("SIMULATION");
+            stage.setResizable(false);
+            stage.show();
+        }
+        catch(NumberFormatException e){
+            alertError("ROBOT",e.getMessage());
+        }
+    }
+
+    @FXML
+    private Integer getRobotsNumber(){return 1;};
+
+    @FXML
+    private Integer getTimeUnit(){return 1000;}
 
     private File openFileChooser(String call,Event e){
         FileChooser fileChooser = new FileChooser();
@@ -65,27 +93,6 @@ public class FollowMeSetupController {
         return fileChooser.showOpenDialog(((Node) e.getSource()).getScene().getWindow());
     }
 
-//    @FXML
-//    public void startApplication(Event event) throws IOException{
-//
-//        try{
-//            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/MainPage.fxml"));
-//            Parent parent = loader.load();
-//            MainSimulationController cont = loader.getController();
-//            cont.setConfig(this.programFile,this.environmentFile,Integer.parseInt(this.nBotText.getText()));
-//            Stage stage = (Stage) (((Node)event.getSource()).getScene().getWindow());
-//            Scene scene = new Scene(parent,600,700);
-//            stage.setScene(scene);
-//            stage.setTitle("SIMULATION");
-//            stage.setResizable(false);
-//            stage.show();
-//        }catch(FollowMeParserException e){
-//            alertError("PARSER EXCEPTION",e.getMessage());
-//        }catch(NumberFormatException e){
-//            alertError("ROBOT",e.getMessage());
-//        }
-//    }
-
     /**
      * Gestisce la visualizzazione degli errori in fase di caricamento
       */
@@ -95,6 +102,4 @@ public class FollowMeSetupController {
         a.setContentText(message);
         a.show();
     }
-
-
 }

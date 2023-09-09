@@ -17,6 +17,8 @@ public class RobotMemory {
     public RobotState getState(int index) {
         return stateMap.get(index);
     }
+
+    public Map<Integer, RobotState> getAllStates(){return stateMap;}
 }
 
 

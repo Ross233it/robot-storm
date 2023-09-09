@@ -4,45 +4,33 @@ package it.unicam.cs.followme.app;
 
 import it.unicam.cs.followme.model.common.TwoDimensionalPoint;
 import it.unicam.cs.followme.model.environment.StaticCircle;
-import javafx.beans.binding.Bindings;
 import javafx.event.Event;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Side;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.chart.NumberAxis;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.Callable;
-import java.util.stream.Collectors;
-
 
 
 import it.unicam.cs.followme.controller.Controller;
 import it.unicam.cs.followme.model.environment.Shape;
 import it.unicam.cs.followme.model.programmables.Robot;
-import it.unicam.cs.followme.app.CartesianAxisManager;
 
 
 public class FollowMeAppController {
@@ -105,13 +93,33 @@ public class FollowMeAppController {
     private List<Shape>currentShapes;
     private Path programPath      = Path.of("C:\\JavaProjects\\followme-main\\app\\src\\main\\resources\\assets\\defaultProgram.txt");
     private Path environmentPath  = Path.of("C:\\JavaProjects\\followme-main\\app\\src\\main\\resources\\assets\\defaultEnvironment.txt");
-
+    private int robotNumber;
+    private int timeUnit;
     @FXML
     public void initialize() {
         this.axes = new CartesianAxisManager(40, cartesian);
-        this.controller = new Controller(programPath, environmentPath);
+        this.controller = new Controller();
+          controller.simulationSetup(5, 30.0, programPath, environmentPath);
+          controller.runSimulation(1000);
         this.currentRobots = controller.getRobots();
         this.currentShapes = controller.getShapes();
+
+
+
+
+        currentRobots.stream()
+                .flatMap(robot -> robot.getMemory().getAllStates().values().stream()) // Ottieni uno stream di RobotState da ciascun robot
+                .forEach(robotState -> {
+                    // Qui puoi elaborare ciascun stato singolarmente
+
+                    System.out.println("Robot: " + robotState.robotId());
+                    System.out.println("Position: " + robotState.position().getX());
+                    if(robotState.direction()!= null)
+                        System.out.println("Vector: " + robotState.direction().getSpeed());
+                    System.out.println("Label: " + robotState.label());
+                    // Esegui altre operazioni sui RobotState, se necessario
+                });
+
         robotInitialize(cartesian);
         displayShapes();
         //this.controller.launchRobots();
@@ -314,6 +322,12 @@ public class FollowMeAppController {
         });
     }
 
+    public void simSetup(File programFile, File environmentFile, int robotNumber, int timeUnit){
+        this.robotNumber = robotNumber;
+        this.timeUnit = timeUnit;
+        this.environmentPath = environmentFile.toPath();
+        this.programPath = programFile.toPath();
+    }
 
     public void addCircle(StaticCircle<TwoDimensionalPoint> staticCircle, Group cartesian){
         double yZero = (SPACE_SQUARE / 2.0)-10;

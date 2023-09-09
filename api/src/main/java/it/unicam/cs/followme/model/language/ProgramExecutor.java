@@ -9,14 +9,14 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 
 /**
- * Questa classe ha la responsabilità di gestire il flusso di esecuzione del programma.
- * Esegue le istruzioni "atomiche" nell'ordine e con le iterazioni indicate nel programma.
+ * Il ProgramExecutor ha la responsabilità di gestire ed attuare il flusso di esecuzione del programma.
+ *
  */
 public class ProgramExecutor{
     private final Robot robot;
-    private final RobotLanguageLoopConstructs   loops = new RobotLanguageLoopConstructs();
-    private final ArrayList<ProgramCommand>     program;
-    private final BidimensionalSpace            environment = BidimensionalSpace.getInstance();
+    private final RobotLanguageLoopConstructs loops = new RobotLanguageLoopConstructs();
+    private final ArrayList<ProgramCommand> program;
+    private final BidimensionalSpace environment = BidimensionalSpace.getInstance();
 
     private Integer currentCommandIndex = 0;
     private int currentTime = 0;
@@ -43,7 +43,8 @@ public class ProgramExecutor{
             if (currentTime <= timer.getTime()) {
                 ProgramCommand currentCommand = program.get(currentCommandIndex);
                 String instruction = currentCommand.getInstruction().trim().replace(" ", "").toLowerCase();
-
+                //todo remove print
+                System.out.println("Thread : " +Thread.currentThread().getId());
                 switch (instruction) {
                     case "repeat"   -> handleRepeatCommand(currentCommand);
                     case "doforever"-> handleDoForeverCommand(currentCommand);
@@ -104,7 +105,7 @@ public class ProgramExecutor{
      * @param time
      */
     private void takeMemory(int time){
-        this.robot.getMemory().recordState(time, new RobotState(this.robot.getPosition(),
+        this.robot.getMemory().recordState(time, new RobotState(this.robot.getId(), this.robot.getPosition(),
                                                                  this.robot.getDirection(),
                                                                  this.robot.getLabel()));
     }

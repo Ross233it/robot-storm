@@ -11,26 +11,27 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Objects;
 
-//public class App extends Application{
-//
-//    @Override
-//    public void start(Stage primaryStage) throws Exception{
-//        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/fxml/FollowMeApp.fxml")));
-//        primaryStage.setTitle("FollowMe Robot Simulation");
-//        primaryStage.setScene(new Scene(root, FollowMeAppController.WIDTH, FollowMeAppController.HEIGHT));
-//        primaryStage.setResizable(false);
-//        primaryStage.show();
-//    }
-//    public static void main(String[] args) { launch(args); }
-//}
+public class App extends Application{
 
-
-public class App {
-    public static void main(String[] args) {
-        Path programPath      = Path.of("C:\\JavaProjects\\followme-main\\app\\src\\main\\resources\\assets\\defaultProgram.txt");
-        Path environmentPath  = Path.of("C:\\JavaProjects\\followme-main\\app\\src\\main\\resources\\assets\\defaultEnvironment.txt");
-
-        Controller myController = new Controller(programPath, environmentPath);
-        myController.launchRobots();
+    @Override
+    public void start(Stage primaryStage) throws Exception{
+        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/fxml/FollowMeSetup.fxml")));
+        primaryStage.setTitle("FollowMe Robot Simulation");
+        primaryStage.setScene(new Scene(root, FollowMeAppController.WIDTH, FollowMeAppController.HEIGHT));
+        primaryStage.setResizable(false);
+        primaryStage.show();
     }
+    public static void main(String[] args) { launch(args); }
 }
+
+//todo sotto funziona
+//public class App {
+//    public static void main(String[] args) {
+//        Path programPath      = Path.of("C:\\JavaProjects\\followme-main\\app\\src\\main\\resources\\assets\\defaultProgram.txt");
+//        Path environmentPath  = Path.of("C:\\JavaProjects\\followme-main\\app\\src\\main\\resources\\assets\\defaultEnvironment.txt");
+//
+//        Controller myController = new Controller();
+//        myController.simulationSetup(25, 30.0, programPath, environmentPath);
+//        myController.runSimulation(1000);
+//    }
+//}
