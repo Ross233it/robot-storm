@@ -1,9 +1,10 @@
 package it.unicam.cs.followme.model.language;
 
+import it.unicam.cs.followme.model.common.TwoDimensionalPoint;
 import it.unicam.cs.followme.model.common.Utilities;
-import it.unicam.cs.followme.model.programmables.Robot;
+import it.unicam.cs.followme.model.environment.Shape;
 
-import java.util.Map;
+import java.util.List;
 
 /**
  * Questa classe ha la responsabilità di rappresentare e gestire i loop del linguaggio di programmazione
@@ -17,7 +18,7 @@ public class RobotLanguageLoopConstructs {
     private Integer repetitionCount;
     private Integer toRepeatCommandIndex;
     private Integer foreverFirstCommandIndex;
-    private Integer untilFirstCommandIndex;
+    private Integer untilCommandIndex;
     /**
      * Il comando repeat rileva il numero di ripetizioni cui è soggetto un blocco di istruzioni
      * @param param integer
@@ -32,9 +33,16 @@ public class RobotLanguageLoopConstructs {
     }
 
 
-    public Integer until(Integer currentCommandIndex){
-        this.untilFirstCommandIndex = currentCommandIndex + 1;
-        return untilFirstCommandIndex;
+    public Integer until(Integer currentCommandIndex, Object label, List<Shape>shapes, TwoDimensionalPoint positionToCheck){
+        //todo remove print
+        //System.out.println("INIZIO UNTIL");
+        this.untilCommandIndex = currentCommandIndex;
+        //if(checkShape(label, shapes, positionToCheck))
+            //todo remove print
+            //System.out.println("true");
+        //todo remove print
+        //System.out.println(currentCommandIndex+1);
+        return currentCommandIndex+1;
     }
 
     /**
@@ -42,8 +50,7 @@ public class RobotLanguageLoopConstructs {
      * ripetuti all'infinito
      */
     public Integer doForever(Integer currentCommandIndex){
-        this.foreverFirstCommandIndex = currentCommandIndex + 1;
-        return foreverFirstCommandIndex;
+        return this.foreverFirstCommandIndex = currentCommandIndex + 1;
     }
 
     /**
@@ -63,8 +70,6 @@ public class RobotLanguageLoopConstructs {
      * @return forevereFirstCommandIndex l'indice del primo comando da ripetere per sempre
      */
     public Integer done(Integer currentCommandIndex) {
-        //todo remove print
-        System.out.println("COMANDO DONE");
         if (repetitionCount != null  && toRepeatCommandIndex != null
             && repetitionCount > 0 && toRepeatCommandIndex > 0) {
             repetitionCount--;
@@ -73,12 +78,28 @@ public class RobotLanguageLoopConstructs {
         if ( foreverFirstCommandIndex != null && foreverFirstCommandIndex >= 0)
              return foreverFirstCommandIndex;
 
-//        if(untilFirstCommandIndex != null && untilFirstCommandIndex >= 0)
-//            if(checkLabel(String label)) return currentCommandIndex+1;
-//            else return untilFirstCommandIndex;
+        if(untilCommandIndex != null && untilCommandIndex >=0)
+             return untilCommandIndex;
 
         return currentCommandIndex+1;
     }
 
+
+    private boolean checkShape(Object label,
+                               List<Shape>shapes,
+                               TwoDimensionalPoint positionToCheck){
+        //todo remove print
+        //System.out.println("CHEK SHAPE LANCIATO");
+        String labelToCheck = Utilities.fromObjectToString(label);
+        //System.out.println("IO SONO label to check" + labelToCheck + shapes.toArray().length);
+
+        boolean test = shapes.stream()
+                .filter(s->s.getLabel().equals(labelToCheck))
+                .filter(s->s.isInternal(positionToCheck))
+                .findFirst().isPresent();
+        //todo remove print
+        //System.out.println("IO SONO TEST" + test);
+        return test;
+    }
 
 }

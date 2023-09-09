@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
  * @param <Shape> rappresenta le possibili forme fisse nell'ambiente
  * @param <Robot> rappresenta i possibili oggetti programmabili
  */
-public class BidimensionalSpace /*implements Environment<Shape, Robot>*/{
+public class BidimensionalSpaceBACKUP /*implements Environment<Shape, Robot>*/{
 
     private  static List<Robot> programmablesInSpace;
     private  static List<Shape> shapesInSpace;
@@ -22,7 +22,7 @@ public class BidimensionalSpace /*implements Environment<Shape, Robot>*/{
     /**
      * Costruisce uno spazio bidimensionale vuoto
      */
-    public BidimensionalSpace() {
+    public BidimensionalSpaceBACKUP() {
         this.programmablesInSpace = new ArrayList<Robot>();
         this.shapesInSpace        = new ArrayList<Shape>();
     }
@@ -32,7 +32,7 @@ public class BidimensionalSpace /*implements Environment<Shape, Robot>*/{
      * @param programmables una lista contenente una serie di programmabili
      * @param shapes una lista contenente una serie di forme statiche.
      */
-    public BidimensionalSpace(List<Robot> programmables, List<Shape> shapes) {
+    public BidimensionalSpaceBACKUP(List<Robot> programmables, List<Shape> shapes) {
         this.programmablesInSpace = programmables;
         this.shapesInSpace        = shapes;
     }

@@ -8,8 +8,6 @@ import java.util.Random;
  * Implementa l'interfaccia Coordinates ed ha il compito di rappresentare un punto all'interno
  * di un piano cartesiano con sistema di coordinate espresso in numeri in virgola mobile.
  */
-
-
 public class TwoDimensionalPoint implements Coordinates<Double> {
 
     private Double positionX;
@@ -33,8 +31,8 @@ public class TwoDimensionalPoint implements Coordinates<Double> {
      */
     public TwoDimensionalPoint(Double range) {
         Random random = new Random();
-        this.positionX =  random.nextDouble(range) ;
-        this.positionY =  random.nextDouble(range);
+        this.positionX =  Utilities.randomDoubleNumber(-range, range);
+        this.positionY =  Utilities.randomDoubleNumber(-range, range);
     }
 
     /**
@@ -75,6 +73,12 @@ public class TwoDimensionalPoint implements Coordinates<Double> {
     }
 
 
+    /**
+     * Definisce l'uguaglianza di due oggetti della classe quando i loro campi positionX
+     * e positionY sono uguali.
+     * @param o Oggetto da confrontare con l'oggetto corrente
+     * @return True se gli oggetti hanno uguali campi False in caso contrario.
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -87,16 +91,4 @@ public class TwoDimensionalPoint implements Coordinates<Double> {
     public int hashCode() {
         return Objects.hash(positionX, positionY);
     }
-
-    /**
-     * Incrementa la posizione x e y di un punto sul piano cartesiano in relazione alla
-     * sua posizione corrente
-     * @param stepX spostamento sull'asse X
-     * @param stepY spostamento sull'asse Y
-     */
-    public void increasePosition(Double stepX, Double stepY) {
-        this.positionX += stepX;
-        this.positionY += stepY;
-    }
-
 }

@@ -34,5 +34,4 @@ public interface Coordinates<I> {
      * @return void
      */
     void setY(I newY);
-
 }

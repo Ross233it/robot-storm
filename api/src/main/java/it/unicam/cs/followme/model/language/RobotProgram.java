@@ -43,7 +43,7 @@ public class RobotProgram implements FollowMeParserHandler{
 
     @Override
     public void followCommand(String label, double[] args) {
-        this.commandList.add(new ProgramCommand("FOLLOW", args));
+        this.commandList.add(new ProgramCommand("FOLLOW", label, args));
     }
 
     @Override
@@ -53,11 +53,7 @@ public class RobotProgram implements FollowMeParserHandler{
 
     @Override
     public void continueCommand(int s) {
-        this.commandList.add(new ProgramCommand("CONTINUE", s));
-        double[] args = {};
-        while(s>0){
-            this.commandList.add(new ProgramCommand("MOVE",null));
-            s--;}
+        while(s>0){this.commandList.add(new ProgramCommand("MOVE",null)); s--;}
     }
 
     @Override
@@ -87,6 +83,4 @@ public class RobotProgram implements FollowMeParserHandler{
     public ArrayList<ProgramCommand> programOutput(){
         return this.commandList;
     }
-
-
 }

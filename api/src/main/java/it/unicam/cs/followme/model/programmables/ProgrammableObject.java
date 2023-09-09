@@ -12,18 +12,16 @@ import it.unicam.cs.followme.model.common.SpeedVector;
  */
 
 public interface ProgrammableObject<P, C, V> {
-    void executeProgram();
 
     C getPosition();
 
     void setPosition(C pos);
-
-    void changePosition(V pos);
-
 
     String getLabel();
 
     void setLabel(String label);
 
     V getDirection();
+
+    void setDirection(V vec);
 }

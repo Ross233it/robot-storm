@@ -2,7 +2,7 @@ package it.unicam.cs.followme.model.environment;
 
 import it.unicam.cs.followme.utilities.FollowMeShapeChecker;
 
-public class EnvironmentAssets implements FollowMeShapeChecker {
+public class EnvironmentAssetsTOREMOVE implements FollowMeShapeChecker {
     @Override
     public boolean checkParameters(String[] args) {
        if(args[0] != null &&  args[0].charAt(0) == '_' &&

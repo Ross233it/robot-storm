@@ -1,39 +1,48 @@
 package it.unicam.cs.followme.model.common;
 
+import java.util.Arrays;
 import java.util.Random;
 
+/**
+ * La classe raccoglie una serie di metodi statici di utilità per
+ * operazioni ricorrenti all'interno dell'applicazione
+ */
 public class Utilities {
     /**
      * Utility method per effettuare il cast esplicito di un oggetto ad array di double
      * @param obj l'oggetto di classe Object da convertire
      * @return Double[] obj l'oggetto convertito.
+     * @throws IllegalArgumentException
      */
     public static double[] fromObjectToDoubleArray(Object obj){
         if(obj instanceof double[])
             return  (double[]) obj;
-        return null;
+        else
+            throw new IllegalArgumentException("L'oggetto non è un array di double");
     }
 
     /**
      * Utility method per effettuare il cast esplicito di un oggetto ad Integer
      * @param obj l'oggetto di classe Object da convertire
      * @return Integer obj l'oggetto convertito.
+     * @throws  IllegalArgumentException
      */
     public static Integer fromObjectToInteger(Object obj){
         if(obj instanceof Integer)
             return  (Integer) obj;
-        return 0;
+        throw new IllegalArgumentException("L'oggetto non è di tipo Integer");
     }
 
     /**
      * Utility method per effettuare il cast esplicito di un oggetto in Stringa
      * @param obj l'oggetto di classe Object da convertire
      * @return String obj l'oggetto convertito in stringa.
+     * @throws IllegalArgumentException
      */
     public static String fromObjectToString(Object obj){
         if(obj instanceof String)
             return  (String) obj;
-        return null;
+        throw new IllegalArgumentException("L'oggetto non è di tipo String");
     }
 
     /**
@@ -49,14 +58,67 @@ public class Utilities {
 
     /**
      * Prende due valori in virgola mobile e restituisce un numero randomico
+     * @param minValue limite inferiore
+     * @param maxValue limite superiore
+     * @return randomNumber un numero in virgola mobile compreso tra -1 e +1
+     */
+    public static Double randomDoubleNumber (Double minValue, Double maxValue){
+        Random random = new Random();
+        Double randomNumber = random.nextDouble(maxValue-minValue+1)+minValue;
+        return randomNumber;
+    }
+
+    /**
+     * Prende due valori in virgola mobile e restituisce un numero randomico
      * compreso tra il limite superiore e il limite inferiore
      * @param minValue limite inferiore
      * @param maxValue limite superiore
      * @return randomNumber un numero in virgola mobile compreso tra -1 e +1
      */
     public static Double randomScaledNumber (Double minValue, Double maxValue){
-        Random random = new Random();
-        Double randomNumber = random.nextDouble(maxValue-minValue+1)+minValue;
+        Double randomNumber = randomDoubleNumber(minValue, maxValue);
         return ((randomNumber-minValue)/(maxValue-minValue))*2-1;
     }
+
+    /**
+     * Ordina due double e restituisce un array ordinato
+     * @param first il primo double
+     * @param second secondo double
+     * @return due cifre disposte in ordine crescente.
+     */
+    public static double[] sortTwoDouble(double first, double second){
+        double[] range = {first, second};
+        Arrays.sort(range);
+        return range;
+    }
+
+    /**
+     * Calcola la diagonale rispetto a due lati di un rettangolo
+     * @param x
+     * @param y
+     * @return
+     */
+    public static double getDiagonal(double x, double y) {
+        double diagonal = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
+        return diagonal;
+    }
+
+
+    /**
+     * Calcola la posizione lungo uno degli assi in relazione alla diagonale di spostamento,
+     * considerando che due rettangoli i cui lati minore e maggiore sono reciprocamente in prpoporizone
+     * hanno diagonali in proporzione.
+     * @param objectDiagonal
+     * @param directionDiagonal
+     * @param directionSide
+     * @return
+     * @throws IllegalArgumentException se directionDiagonal == 0
+     */
+    public static double getSideFromDiagonal(Double objectDiagonal, Double directionDiagonal, Double directionSide ){
+        if(directionDiagonal != 0)
+            return directionSide * objectDiagonal/directionDiagonal;
+        else
+            throw new IllegalArgumentException("Il valore della diagonale non può essere zero");
+    }
+
 }

@@ -5,12 +5,19 @@ package it.unicam.cs.followme.model.language;
  * Ha la responsabilità di fornire la dichiarazione del comando da eseguire
  * e gli argomenti necessari.
  */
-public class ProgramCommand<T>{
-    private final String instruction;
-    private final T parameters;
+public class ProgramCommand<T, D>{
+    private  String instruction;
+    private  T parameters;
+    private  D[]multipleParameters;
 
     /**
-     * Genera un nuovo comando eseguibile con parametri.
+     * Genera un nuovo comando eseguibile che non necessita di parametri.
+     * @param instruction rappresenta il nome del comando da eseguire
+     */
+    public ProgramCommand(String instruction){this.instruction = instruction;}
+
+    /**
+     * Genera un nuovo comando eseguibile con parametri di un solo tipo.
      * @param instruction rappresenta il nome del comando da eseguire
      * @param parameters le informazioni complementari necessario per eseguire il comando
      */
@@ -20,13 +27,15 @@ public class ProgramCommand<T>{
     }
 
     /**
-     * Genera un nuovo comando eseguibile che non necessita di parametri.
+     * Genera un nuovo comando eseguibile con parametri di un solo tipo.
      * @param instruction rappresenta il nome del comando da eseguire
+     * @param parameters le informazioni complementari necessario per eseguire il comando
      */
-    public ProgramCommand(String instruction){
+    public ProgramCommand(String instruction, D... multipleParameters){
         this.instruction = instruction;
-        this.parameters = null;
+        this.multipleParameters = multipleParameters;
     }
+
 
     /**
      * Metodo getter per il parametro instruction.
@@ -40,8 +49,8 @@ public class ProgramCommand<T>{
      * Metodo getter per il parametro parameters.
      * @return parameters parametri per l'esecuzione del comando
      */
-    public T getParameters() {
-        return parameters;
-    }
+    public T getParameters() {return parameters;}
+
+    public D[] getMultipleParameters(){return multipleParameters;}
 
 }

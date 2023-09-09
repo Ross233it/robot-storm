@@ -33,7 +33,7 @@ public class ExecutionTestClass /*extends Application */{
         //newController.runSimulation();
         //timer
 
-//        SimulationTimer simulationTimer = new SimulationTimer(time, 1000,5);
+//        SimulationTimerOLD simulationTimer = new SimulationTimerOLD(time, 1000,5);
 
 
         //program
@@ -48,7 +48,7 @@ public class ExecutionTestClass /*extends Application */{
 //            System.out.println(testShape.label() + " " + testShape.shape() + " " + testShape.args()[0] );
 //        }
         //environment creation
-//        BidimensionalSpace activeEnvironment = new BidimensionalSpace(robotsMap,environmentShapes);
+//        BidimensionalSpaceOld activeEnvironment = new BidimensionalSpaceOld(robotsMap,environmentShapes);
 
 
 //esecuzione multithread ------------ ok --------------

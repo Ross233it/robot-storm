@@ -1,12 +1,14 @@
 package it.unicam.cs.followme.controller;
 
 import it.unicam.cs.followme.model.common.TwoDimensionalPoint;
-import it.unicam.cs.followme.model.environment.TestBidimensionalSpace;
-import it.unicam.cs.followme.model.environment.Circle;
-import it.unicam.cs.followme.model.environment.Rectangle;
+import it.unicam.cs.followme.model.environment.BidimensionalSpace;
+import it.unicam.cs.followme.model.environment.StaticCircle;
+import it.unicam.cs.followme.model.environment.StaticRectangle;
 import it.unicam.cs.followme.model.environment.Shape;
 import it.unicam.cs.followme.model.language.RobotProgram;
+import it.unicam.cs.followme.model.programmables.ProgrammableObject;
 import it.unicam.cs.followme.model.programmables.Robot;
+import it.unicam.cs.followme.model.programmables.RobotActivities;
 import it.unicam.cs.followme.utilities.FollowMeParser;
 import it.unicam.cs.followme.utilities.FollowMeParserException;
 import it.unicam.cs.followme.utilities.ShapeData;
@@ -14,44 +16,57 @@ import it.unicam.cs.followme.utilities.ShapeData;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.ListIterator;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
+import it.unicam.cs.followme.model.timeManagment.SimulationTimer;
+import it.unicam.cs.followme.model.environment.Environment;
+public class Controller<S extends Shape, P extends ProgrammableObject> {
 
-public class Controller {
+    private final Path programPath;
 
-    private Path programPath;
-    private Path environmentPath;
-    private final RobotProgram program  = new RobotProgram();
-    private final FollowMeParser parser = new FollowMeParser(program);
-    private TestBidimensionalSpace environment;
+    private final Path environmentPath;
 
-    public Controller (Path programPath, Path environmentPath){
-        this();
-        this.programPath = programPath;
-        this.environmentPath = environmentPath;
-    }
+    private final RobotProgram program;
+
+    private final FollowMeParser parser ;
+
+    private BidimensionalSpace environment;
+
+    private Supplier<Environment<S, P>> environmentBuilder;
+
 
     /**
      * genera un controller con programma e ambiente di default     *
      */
-    public Controller(){
-       this.programPath      = Paths.get("src/main/resources/assets/default_program.txt");
-       this.environmentPath  = Paths.get("src/main/resources/assets/default_environment.txt");
+    public Controller(Path programPath, Path environmentPath){
+        this.programPath     = programPath;
+        this.environmentPath = environmentPath;
+        this.program         = new RobotProgram();
+        this.parser          = new FollowMeParser(program);
+
 
         RobotProgram currentProgram = generateRobotProgram(programPath);
 
-        List<Callable<Robot>> currentRobots = generateRobotsRandomly(5,  currentProgram, 5.0);
+        List<Robot> currentRobots = generateRobotsRandomly(1,  currentProgram, 40.0);
 
         List<Shape> currentShapes = shapes(environmentPath);
 
-        this.environment = new TestBidimensionalSpace(currentRobots, currentShapes);
+        this.environment = new BidimensionalSpace(currentRobots, currentShapes);
+
+//        TwoDimensionalPoint testPoint = new TwoDimensionalPoint(15.0);
+//        List<Robot> testList = environment.getNeighbours(testPoint, "Init",25.0);
+//        testList.stream().forEach(e->System.out.println(e.getId()));
+
+        SimulationTimer timer = new SimulationTimer(1000);
+            timer.start();
     }
+
 
 
     public void runSimulation(Integer robotNumber, Integer timeUnit){
@@ -61,11 +76,11 @@ public class Controller {
 //
 //        List<Shape> currentShapes = shapes(this.environmentPath);
 //
-//        this.environment = new TestBidimensionalSpace(currentRobots, currentShapes);
+//        this.environment = new BidimensionalSpace(currentRobots, currentShapes);
 //
 //        lunchRobots(currentRobots);
 //        //TODO Implementare la possibilità di cambiare il tempo
-//        SimulationTimer timer = new SimulationTimer(timeUnit);
+//        SimulationTimerOLD timer = new SimulationTimerOLD(timeUnit);
 //        timer.start();
     }
 
@@ -77,13 +92,14 @@ public class Controller {
      * @param range limite di posizionamento dei robot nello spazio.
      * @return allRobots lista dei robots creati
      */
-    public List<Callable<Robot>> generateRobotsRandomly(Integer objectNumber,
-                                                         RobotProgram program,
-                                                         Double range){
-            List<Callable<Robot>> allRobots = new ArrayList<>();
-            for(int t=0; t<objectNumber; t++){allRobots.add(new Robot(range, t, program));}
-            return allRobots;
+    public List<Robot> generateRobotsRandomly(Integer objectNumber,
+                                              RobotProgram program,
+                                              Double range){
+        List<Robot> allRobots = new ArrayList<>();
+        for(int t=0; t<objectNumber; t++){allRobots.add(new Robot(range, t));}
+        return allRobots;
     }
+
 
     /**
      * Recupera il programma da un file di testo in posizione programPath e
@@ -104,14 +120,19 @@ public class Controller {
     }
 
     /**
-     * Ricevuta una lista di Robot che estendono Callable, avvia un ExecutorService
+     * Ricevuta una lista di Robot raccoglie i loro programExecutor, avvia un ExecutorService
      * e lancia l'esecuzione parallela dei rispettivi programmi su tutti i robot della lista.
-     * @param allRobots
      */
-    private void lunchRobots(List<Callable<Robot>> allRobots){
+    public void launchRobots(){
+            List<Robot> allRobots = this.environment.getProgrammableInSpace();
+
+            List<Callable<RobotActivities>> robotExecutors = allRobots.stream()
+                    .map(robot-> new RobotActivities(robot, program))
+                    .collect(Collectors.toList());
+
             ExecutorService executor = Executors.newCachedThreadPool();
             try {
-                executor.invokeAll(allRobots);
+                executor.invokeAll(robotExecutors);
             } catch (InterruptedException e) {
                  throw new RuntimeException(e);
             }
@@ -137,11 +158,17 @@ public class Controller {
         while(iterator.hasNext()) {
             ShapeData currentShape = iterator.next();
             TwoDimensionalPoint position = new TwoDimensionalPoint(currentShape.args()[0], currentShape.args()[1]);
-            if(currentShape.shape() == "CIRCLE"){
-                shapeList.add(new Circle(position, currentShape.label(), currentShape.args()[2]));
-            }else   if(currentShape.shape() == "RECTANGLE") {
-                shapeList.add(new Rectangle(position, currentShape.label(), currentShape.args()[2], currentShape.args()[3]));
+            if(currentShape.shape().equals("CIRCLE")){
+                //todo remove print
+                System.out.println("HO CREATO UN CERCHIO NELLA LISTA");
+                shapeList.add(new StaticCircle(position, currentShape.label(), currentShape.args()[2]));
+            }else   if(currentShape.shape().equals("RECTANGLE")) {
+                //todo remove print
+                System.out.println("HO CREATO UN RETTANGOLO NELLA LISTA");
+                shapeList.add(new StaticRectangle(position, currentShape.label(), currentShape.args()[2], currentShape.args()[3]));
             }
+            //todo remove print
+            System.out.println("metodo shapes");
             System.out.println(currentShape.label() + " " + currentShape.shape() + " " + currentShape.args()[0] );
         }
     return  shapeList;
@@ -149,19 +176,8 @@ public class Controller {
 
     public RobotProgram getProgram(){return this.program;}
 
-    public List<Callable<Robot>>getCallableRobots(){ return this.environment.getProgrammableInSpace();}
+    public List<Robot>getRobots(){ return this.environment.getProgrammableInSpace();}
 
-    public List<Robot> getRobots(){
-        List<Robot> robotList = this.environment.getProgrammableInSpace().stream()
-                .map(callable -> {
-                    try {
-                        return callable.call();
-                    } catch (Exception e) {return null;}
-                })
-                .filter(robot -> robot != null) // Rimuove eventuali risultati nulli
-                .collect(Collectors.toList());
-        return robotList;
-    }
 
     public List<Shape>getShapes(){ return this.environment.getShapesInSpace();}
 

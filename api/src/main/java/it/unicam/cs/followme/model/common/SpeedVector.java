@@ -1,9 +1,9 @@
 package it.unicam.cs.followme.model.common;
 
 /**
- * Estende la classe Location ed ha la responsabilità di rappresentare un vettore di movimento.
- * Definisce una direzione di movimento caratterizzata da delle coordinate cartesiane comprese
- * tra i valori +1 e -1 in entrambi gli assi e da una velocità di sposrtamento.
+ * Estende la classe TwoDimensionalPoint ed ha la responsabilità di rappresentare un vettore di movimento.
+ * Definisce una direzione di movimento caratterizzata da coordinate cartesiane comprese
+ * tra i valori +1 e -1 su entrambi gli assi e da una velocità di spostamento.
  */
 public class SpeedVector extends TwoDimensionalPoint {
 
@@ -17,7 +17,7 @@ public class SpeedVector extends TwoDimensionalPoint {
      * @param speed velocità di movimento degli oggetti
      */
     public SpeedVector(Double dirX, Double dirY, double speed) {
-        super(dirX * speed, dirY * speed);
+        super(dirX, dirY);
         if(dirX > 1 || dirX < -1 || dirY > 1 || dirY < -1)
             throw new IllegalArgumentException
                     ("Il valore della direzione non è nei valori consentiti");
@@ -30,14 +30,5 @@ public class SpeedVector extends TwoDimensionalPoint {
      */
     public Double getSpeed(){
         return speed;
-    }
-
-    /**
-     * Cambia la velocità di movimento impostata per questa direzione
-     * @param newSpeed  nuova velocità di movimento di un oggetto.
-     */
-    public void changeSpeed(Double newSpeed){
-        this.setX((this.getX()/speed) * newSpeed);
-        this.setY((this.getY()/speed) * newSpeed);
     }
 }

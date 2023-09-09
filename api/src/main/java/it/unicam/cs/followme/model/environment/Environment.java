@@ -17,13 +17,17 @@ import java.util.Map;
 
 public interface Environment<S, P>{
 
+    /**
+     * Ritorna una lista degli oggetti programmabili presenti nell'ambiente.
+     * @return
+     */
     List<P> getProgrammableInSpace();
 
+    /**
+     * Ritorna una collezione degli oggetti geometrici presenti nell'ambiente.
+     * @return
+     */
     List<S> getShapesInSpace();
-
-    void addProgrammableToSpace(P prog);
-
-    void addShapesToSpace(S shape);
 
 }
 

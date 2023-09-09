@@ -1,26 +1,26 @@
 package it.unicam.cs.followme.model.environment;
 
 
-import it.unicam.cs.followme.model.common.TwoDimensionalPoint;
+import it.unicam.cs.followme.model.common.Coordinates;
 import it.unicam.cs.followme.model.common.Utilities;
 
 /**
- * Rappresenta la forma statica circolare che può essere disposta nello spazio planare
+ * Rappresenta la forma statica circolare che può essere disposta nello spazio 2D.
  */
-public class Circle implements Shape<TwoDimensionalPoint> {
-    private TwoDimensionalPoint position;
+public class StaticCircle<C extends Coordinates<Double>> implements Shape<C> {
+    private final C position;
     private String label;
-    private Double radius;
+    private final Double radius;
 
 
     /**
-     * Crea una forma di tipo Circle
+     * Crea una forma di tipo StaticCircle
      * @param position la posizione del centro della circonferenza
      * @param radius raggio della circonferenza
      * @param label  stato/condizione della figura
      * @throws IllegalArgumentException se il raggio del cerchio è negativo
      */
-    public Circle(TwoDimensionalPoint position, String label, Double radius) {
+    public StaticCircle(C position, String label, Double radius) {
         if(radius < 0)
             throw new IllegalArgumentException("Negative circle radius");
         this.position = position;
@@ -28,31 +28,40 @@ public class Circle implements Shape<TwoDimensionalPoint> {
         this.label = label;
     }
 
-
     /**
      * Dato un punto del piano cartesiano verifica se è interno o esterno alla figura
      * @return TRUE se il punto è interno o sulla circonferenza
      * @return FALSE se il punto è esterno alla circonferenza
      */
-    public Boolean isInternal (TwoDimensionalPoint pointToCheck){
-        return Utilities.checkPointInsideCircle(pointToCheck, this.position, this.radius);
-    };
-
+    @Override
+    public Boolean isInternal (C pointToCheck){
+        return Math.sqrt(Math.pow(pointToCheck.getX() - this.position.getX(), 2)
+                + Math.pow(pointToCheck.getY() - this.position.getY(), 2)) <=  radius;
+    }
 
     /**
      * Ritorna la condizione corrente del cerchio
      * @return label condizione del cerchio
      */
+    @Override
     public String getLabel() {
         return label;
     }
 
+    /**
+     * Ritorna il raggio del cerchio
+     * @return radius condizione del cerchio
+     */
+    public Double getRadius() {
+        return radius;
+    }
 
     /**
      * Ritorna la posizione del punto di centro della circonferenza.
-     * @return position centro del Circle
+     * @return position centro del StaticCircle
      */
-    public TwoDimensionalPoint getPosition() {
+    @Override
+    public C getPosition() {
         return position;
     }
 }

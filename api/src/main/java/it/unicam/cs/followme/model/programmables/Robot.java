@@ -11,50 +11,20 @@ import java.util.concurrent.Callable;
  * di modificare la propria posizione e la propria condizione.
  */
 
-public class Robot implements ProgrammableObject<RobotProgram, TwoDimensionalPoint, SpeedVector>, Callable{
+public class Robot implements ProgrammableObject<RobotProgram, TwoDimensionalPoint, SpeedVector>/*, Callable*/{
     Integer robotId;
     TwoDimensionalPoint position;
     String label;
-    RobotProgram program;
     SpeedVector direction;
-
-
-    /**
-     * crea un robot in posizione fissa data
-     */
-    public Robot(TwoDimensionalPoint position) {
-        this.position = position;
-    }
 
     /**
      * Crea un robot in posizione randomica inclusa nel range
      * @param range il limite massimo lungo gli assi in cui il robot può essere posizionato.
      */
-    public Robot(Double range, Integer robotId, String label, RobotProgram program) {
+    public Robot(Double range, Integer robotId) {
         this.position = new TwoDimensionalPoint(range);
-        this.label = label;
-        //this.robotId = robotId;
-        this.program = program;
-    }
-
-    public Robot(Double range, Integer robotId, RobotProgram program) {
-        this.position = new TwoDimensionalPoint(range);
-        this.label = "";
-        //this.robotId = robotId;
-        this.program = program;
-        this.direction = new SpeedVector(0.0, 0.0, 0.0);
-    }
-
-    /**
-     * Riceve come parametro un programma {@link RobotProgram} e ne avvia l'esecuzione
-     * da parte del robot corrente;
-     */
-    @Override
-    public void executeProgram(){
-        //TODO remove the print
-        System.out.println("Io sono ROBOT EXECUTE");
-        ProgramExecutor currentExecutor = new ProgramExecutor(this, program);
-        currentExecutor.execute();
+        this.label = "Init";
+        this.robotId = robotId;
     }
 
     /**
@@ -76,15 +46,14 @@ public class Robot implements ProgrammableObject<RobotProgram, TwoDimensionalPoi
         this.position = position;
     }
 
-
-    /**
-     * Incrementa la posizione del robot nello spazio bidimensionale
-     * @param speedVector oggetto che individua una direzione e una velocità.
-     */
-    public void changePosition(SpeedVector speedVector){
-        this.direction = speedVector;
-        position.increasePosition(speedVector.getX(), speedVector.getY());
-    }
+//    /**
+//     * Incrementa la posizione del robot nello spazio bidimensionale
+//     * @param speedVector oggetto che individua una direzione e una velocità.
+//     */
+//    public void changePosition(SpeedVector speedVector){
+//        this.direction = speedVector;
+//        position.increasePosition(speedVector.getX(), speedVector.getY());
+//    }
 
     /**
      * Modifica la label di condizione del robot corrente
@@ -95,7 +64,6 @@ public class Robot implements ProgrammableObject<RobotProgram, TwoDimensionalPoi
         this.label = label;
     }
 
-
     /**
      * Ritorna la label di condizione del robot corrente
      * @return  label la label del robot
@@ -105,22 +73,22 @@ public class Robot implements ProgrammableObject<RobotProgram, TwoDimensionalPoi
         return label;
     }
 
-
+    /**
+     * Ritorna 'ultimo vettore di movimento su cui si è spostato il
+     * robot
+     * @return  direction ultima direzione di moviemnto
+     */
+    @Override
     public SpeedVector getDirection(){return direction;}
 
+
+    @Override
+    public void setDirection(SpeedVector direction){ this.direction = direction;}
+
     /**
-     * Ritorna l'identificativo del robot
+     * Ritorna l'identificativo univoco del robot
      * @return  label la label del robot
      */
     public int getId(){return robotId;}
 
-    /**
-     * Permette ai robot di eseguire il loro programma in modo parallelo.
-     * @throws Exception
-     */
-    @Override
-    public Integer call() throws Exception {
-        executeProgram();
-        return 0;
-    }
 }

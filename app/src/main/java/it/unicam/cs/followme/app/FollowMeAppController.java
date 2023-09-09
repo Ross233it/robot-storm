@@ -2,6 +2,8 @@ package it.unicam.cs.followme.app;
 
 
 
+import it.unicam.cs.followme.model.common.TwoDimensionalPoint;
+import it.unicam.cs.followme.model.environment.StaticCircle;
 import javafx.beans.binding.Bindings;
 import javafx.event.Event;
 import javafx.event.EventHandler;
@@ -27,6 +29,9 @@ import javafx.stage.Stage;
 
 
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
@@ -97,12 +102,19 @@ public class FollowMeAppController {
     private CartesianAxisManager axes;
     private Controller controller;
     private List<Robot>currentRobots;
+    private List<Shape>currentShapes;
+    private Path programPath      = Path.of("C:\\JavaProjects\\followme-main\\app\\src\\main\\resources\\assets\\defaultProgram.txt");
+    private Path environmentPath  = Path.of("C:\\JavaProjects\\followme-main\\app\\src\\main\\resources\\assets\\defaultEnvironment.txt");
 
     @FXML
     public void initialize() {
         this.axes = new CartesianAxisManager(40, cartesian);
-        this.controller = new Controller();
+        this.controller = new Controller(programPath, environmentPath);
         this.currentRobots = controller.getRobots();
+        this.currentShapes = controller.getShapes();
+        robotInitialize(cartesian);
+        displayShapes();
+        //this.controller.launchRobots();
         setup();
     }
 
@@ -262,14 +274,17 @@ public class FollowMeAppController {
      * This method is used to zoom in the observed cells, namely to increase the number of cells depicted in the interface.
      */
     private void zoomIn() {
-        this.axes.axisSetup(this.axes.getScale()+10, this.cartesian);
+        this.axes.axisSetup(
+                this.axes.getScale()-10, this.cartesian);
+               // robotInitialize(this.cartesian);
     }
 
     /**
      * This method is used to zoom out the observed cells, namely to increase the cells size.
      */
     private void zoomOut() {
-        this.axes.axisSetup(this.axes.getScale()-10, this.cartesian);
+        this.axes.axisSetup(this.axes.getScale()+10, this.cartesian);
+       // robotInitialize(this.cartesian);
         }
 
 
@@ -278,20 +293,69 @@ public class FollowMeAppController {
     }
 
     private void robotInitialize(Group cartesian) {
+        System.out.println("Comando richiamato");
         double tickSize = this.axes.getTickSize();
         double yZero = (SPACE_SQUARE / 2.0)-10;
         double xZero = (SPACE_SQUARE) / 2.0;
 
         this.currentRobots.stream().forEach(e->{Label
-                            label =new Label( e.getLabel(),
+                            label =new Label( e.getId() +" "+ e.getLabel(),
                                new Circle(2,Color.RED));
-                            label.setLayoutX((e.getPosition().getX()));
-                            label.setLayoutY((e.getPosition().getY()));
-                            this.cartesian.getChildren().add(label);
+                            label.setLayoutX(xZero+((e.getPosition().getX())*tickSize));
+                            label.setLayoutY(yZero+((e.getPosition().getY())*tickSize));
+                            cartesian.getChildren().add(label);
                         });
-
+        System.out.println("Comando completato");
         };
 
+    private void displayShapes(){
+        this.currentShapes.stream().forEach(e->{
+            if(e instanceof StaticCircle) this.addCircle((StaticCircle) e, this.cartesian);
+        });
+    }
+
+
+    public void addCircle(StaticCircle<TwoDimensionalPoint> staticCircle, Group cartesian){
+        double yZero = (SPACE_SQUARE / 2.0)-10;
+        double xZero = (SPACE_SQUARE) / 2.0;
+
+        Double x = (staticCircle.getPosition().getX()) * axes.getTickSize();
+        Double y = (staticCircle.getPosition().getY()) * axes.getTickSize();
+        Double radius = staticCircle.getRadius()*(axes.getTickSize());
+        Circle sceneCircle = new Circle(x, y, radius, Color.GREEN);
+
+        sceneCircle.setOpacity(0.5);
+        Label label = new Label(staticCircle.getLabel(),sceneCircle);
+        this.cartesian.getChildren().add(label);
+    }
+
+//    private void addCircle(Map.Entry<Figure,Cordinates>e){
+//        it.unicam.cs.followme.model.Circle circle=(it.unicam.cs.followme.model.Circle)e.getKey();
+//        Circle c = new Circle
+//                (mapX(circle.getR())-mapX(0),Color.BLUE);
+//        c.setOpacity(0.5);
+//        Label label = new Label(circle.getLabel(),c);
+//        label.setLayoutX(mapX(e.getValue().getX())-c.getRadius());
+//        label.setLayoutY(mapY(e.getValue().getY())-c.getRadius()/1.35);
+//        this.figureMap.put(label,circle);
+//        //controllo se il cerchio e' nella simulazione
+//        if(isInX(label.getLayoutX()-c.getRadius())&&isInX(c.getRadius()+label.getLayoutX())
+//                && isInY(label.getLayoutY()-c.getRadius())&&isInY(c.getRadius()+label.getLayoutY()))
+//            this.cartesian.getChildren().add(label);
+//    }
+
+//    private void initFigure(){
+//        if(this.figureMap.size()>0)this.cartesian.getChildren().removeAll(this.figureMap.keySet());
+//        this.figureMap=new HashMap<>();
+//        List<Map.Entry<Figure,Cordinates>> figures = this.modelController.getFigures().entrySet().stream().toList();
+//        if(figures.size()!=0)
+//            figures.forEach(e->{
+//                if(e.getKey().getType()==FigureEnumeration.CIRCLE)
+//                    this.addCircle(e);
+//                else
+//                    this.addRectangle(e);
+//            });
+//    }
 }
 
 
