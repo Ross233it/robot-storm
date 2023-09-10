@@ -1,5 +1,6 @@
 package it.unicam.cs.followme.model.language;
 
+import it.unicam.cs.followme.io.ProgramLoader;
 import it.unicam.cs.followme.model.common.TwoDimensionalPoint;
 import it.unicam.cs.followme.model.environment.BidimensionalSpace;
 import it.unicam.cs.followme.model.environment.Shape;
@@ -15,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class RobotLanguageAtomicConstructsTest {
     private static Robot positionedRobot;
-    private static RobotProgram robotProgram;
+    private static ProgramLoader programLoader;
     private static RobotActivities robotActivities;
     private static BidimensionalSpace environmentInstance;
     private static ProgramCommand commandToTest;
@@ -24,11 +25,11 @@ class RobotLanguageAtomicConstructsTest {
    @BeforeAll
     public static void setup(){
         positionedRobot =  new Robot(new TwoDimensionalPoint(20.0, 50.0), 2);
-        robotProgram    =  new RobotProgram();
-        robotActivities =  new RobotActivities(positionedRobot, robotProgram);
+        programLoader =  new ProgramLoader();
+        robotActivities =  new RobotActivities(positionedRobot, programLoader);
         commandToTest   =  new ProgramCommand("MOVE");
         environmentInstance= new BidimensionalSpace<Shape, Robot>().getInstance();
-        robotProgram.addCommand(commandToTest);
+        programLoader.addCommand(commandToTest);
     }
 
     @Test

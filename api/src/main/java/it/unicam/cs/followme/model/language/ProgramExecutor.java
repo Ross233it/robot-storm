@@ -1,5 +1,6 @@
 package it.unicam.cs.followme.model.language;
 
+import it.unicam.cs.followme.io.ProgramLoader;
 import it.unicam.cs.followme.model.environment.BidimensionalSpace;
 import it.unicam.cs.followme.model.programmables.ProgrammableObject;
 import it.unicam.cs.followme.model.programmables.Robot;
@@ -7,6 +8,7 @@ import it.unicam.cs.followme.model.programmables.RobotState;
 import it.unicam.cs.followme.model.timeManagment.SimulationTimer;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.concurrent.Callable;
 
 /**
  * Il ProgramExecutor ha la responsabilità di gestire ed attuare il flusso di esecuzione del programma.
@@ -26,7 +28,7 @@ public class ProgramExecutor{
      * @param robot
      * @param program
      */
-    public ProgramExecutor(Robot robot, RobotProgram program) {
+    public ProgramExecutor(Robot robot, ProgramLoader program) {
         this.robot    = robot;
         this.program  = program.programOutput();
     }
@@ -54,34 +56,59 @@ public class ProgramExecutor{
                     default         -> handleDefaultCommand(instruction, currentCommand);
                 }
             }
-            currentTime++;
+           currentTime++;
         }
     }
 
+    /**
+     * Avvia il comando repeat
+     * @param command il comando da eseguire {@link ProgramCommand}
+     */
     private void handleRepeatCommand(ProgramCommand command) {
         currentCommandIndex = loops.repeat(command.getParameter(), currentCommandIndex);
     }
 
+    /**
+     * Avvia il comando do forever
+     * @param command il comando da eseguire {@link ProgramCommand}
+     */
     private void handleDoForeverCommand(ProgramCommand command) {
         currentCommandIndex = loops.doForever(currentCommandIndex);
     }
 
+    /**
+     * Avvia il comando done sul robot corrente
+     * @param command il comando da eseguire {@link ProgramCommand}
+     */
     private void handleDoneCommand(ProgramCommand command) {
         currentCommandIndex = loops.done(currentCommandIndex);
     }
 
+    /**
+     * Avvia il comando  until sul robot corrente
+     * @param command il comando da eseguire {@link ProgramCommand}
+     */
     private void handleUntilCommand(ProgramCommand command) {
         currentCommandIndex = loops.until(currentCommandIndex, command.getParameter(), environment.getShapesInSpace(), robot.getPosition());
     }
 
+    /**
+     * Avvia il comando follow sul robot corrente
+     * @param command il comando da eseguire {@link ProgramCommand}
+     */
     private void handleFollowCommand(ProgramCommand command) {
         RobotLanguageAtomicConstructs.follow(command.getMultipleParameters(), environment, this.robot);
     }
 
+    /**
+     * Avvia i comandi di base sul robot corrente
+     * @param command il comando da eseguire {@link ProgramCommand}
+     */
     private void handleDefaultCommand(String instruction, ProgramCommand command) {
         callMethod(instruction, command.getParameter());
         takeMemory(this.currentTime);
     }
+
     /**
      * Richiama il metodo appropriato in relazione all'istruzione passata come argomento.
      * @param instruction istruzione da eseguire;

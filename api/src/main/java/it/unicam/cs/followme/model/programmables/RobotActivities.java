@@ -1,7 +1,7 @@
 package it.unicam.cs.followme.model.programmables;
 
 import it.unicam.cs.followme.model.language.ProgramExecutor;
-import it.unicam.cs.followme.model.language.RobotProgram;
+import it.unicam.cs.followme.io.ProgramLoader;
 
 import java.util.concurrent.Callable;
 
@@ -11,7 +11,7 @@ import java.util.concurrent.Callable;
  */
 public class RobotActivities implements Callable<RobotActivities>{
     Robot robot;
-    RobotProgram program;
+    ProgramLoader program;
     ProgramExecutor programExecutor;
 
     /**
@@ -19,7 +19,7 @@ public class RobotActivities implements Callable<RobotActivities>{
      * @param robot il robot destinatario dell'esecuzione
      * @param program il programma da eseguire
      */
-    public RobotActivities(Robot robot, RobotProgram program) {
+    public RobotActivities(Robot robot, ProgramLoader program) {
         this.robot = robot;
         this.program = program;
         this.programExecutor = new ProgramExecutor(robot, program);

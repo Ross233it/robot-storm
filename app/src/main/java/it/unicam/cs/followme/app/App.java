@@ -24,7 +24,7 @@ public class App extends Application{
     public static void main(String[] args) { launch(args); }
 }
 
-//todo sotto funziona
+////todo sotto funziona
 //public class App {
 //    public static void main(String[] args) {
 //        Path programPath      = Path.of("C:\\JavaProjects\\followme-main\\app\\src\\main\\resources\\assets\\defaultProgram.txt");

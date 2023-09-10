@@ -1,6 +1,5 @@
 package it.unicam.cs.followme.app;
 
-import it.unicam.cs.followme.utilities.FollowMeParserException;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -36,15 +35,13 @@ public class FollowMeSetupController {
     private TextField robotNumberField;
     @FXML
     private TextField timeUnitField;
-    @FXML
-    private Text textEnv;
 
     /**
      *Consente il caricamento e la memorizzazione del file di ambiente
      */
     @FXML
-    public void selectRobotProgram(Event e){
-        this.programFile=openFileChooser("Apri programma",e);
+    public void selectProgramFile(Event e){
+        this.programFile = openFileChooser("Apri programma",e);
     }
 
     /**
@@ -52,7 +49,7 @@ public class FollowMeSetupController {
      */
     @FXML
     public void selectEnvironmentFile(Event e){
-        this.environmentFile=openFileChooser("Apri File di Ambiente", e);
+        this.environmentFile = openFileChooser("Apri File di Ambiente", e);
     }
 
 
@@ -69,7 +66,7 @@ public class FollowMeSetupController {
             Stage stage = (Stage) (((Node)event.getSource()).getScene().getWindow());
             Scene scene = new Scene(parent,800,800);
             stage.setScene(scene);
-            stage.setTitle("SIMULATION");
+            stage.setTitle("FOLLOW ME ROBOT SIMULATION");
             stage.setResizable(false);
             stage.show();
         }
@@ -102,4 +99,9 @@ public class FollowMeSetupController {
         a.setContentText(message);
         a.show();
     }
+//
+//    private void checkFields(){
+//        if( robotNumberField == null )  alertError("ERRORE NUMERO ROBOT", "Il numero dei robot deve essere maggiore di 0");
+//
+//    }
 }

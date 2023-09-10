@@ -1,20 +1,6 @@
 package it.unicam.cs.followme.app;
 
 
-import it.unicam.cs.followme.model.language.RobotProgram;
-import it.unicam.cs.followme.utilities.FollowMeParser;
-import it.unicam.cs.followme.utilities.FollowMeParserException;
-import it.unicam.cs.followme.utilities.ShapeData;
-import it.unicam.cs.followme.controller.Controller;
-import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.stage.Stage;
-
-import java.util.Objects;
-
-
 public class ExecutionTestClass /*extends Application */{
 //    @Override
 //    public void start(Stage primaryStage) throws Exception{
@@ -70,7 +56,7 @@ public class ExecutionTestClass /*extends Application */{
 //-------------------------------------------------------------------
 
         //stampa comandi
-     //   RobotProgram myProgram = newController.getProgram();
+     //   ProgramLoader myProgram = newController.getProgram();
        // myProgram.programOutput().stream().forEach(ShapeBuilder->System.out.println(ShapeBuilder.getInstruction()));
 //
     }

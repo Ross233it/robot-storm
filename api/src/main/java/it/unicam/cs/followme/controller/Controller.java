@@ -3,9 +3,10 @@ package it.unicam.cs.followme.controller;
 import it.unicam.cs.followme.io.ShapeBuilder;
 import it.unicam.cs.followme.io.ShapeLoader;
 import it.unicam.cs.followme.io.ShapesCreator;
+import it.unicam.cs.followme.model.common.TwoDimensionalPoint;
 import it.unicam.cs.followme.model.environment.BidimensionalSpace;
 import it.unicam.cs.followme.model.environment.Shape;
-import it.unicam.cs.followme.model.language.RobotProgram;
+import it.unicam.cs.followme.io.ProgramLoader;
 import it.unicam.cs.followme.model.programmables.ProgrammableObject;
 import it.unicam.cs.followme.model.programmables.Robot;
 import it.unicam.cs.followme.model.programmables.RobotActivities;
@@ -24,7 +25,7 @@ import it.unicam.cs.followme.model.timeManagment.SimulationTimer;
 
 public class Controller<S extends Shape, P extends ProgrammableObject> {
 
-    private  RobotProgram program;
+    private ProgramLoader program;
     private final FollowMeParser parser ;
     private BidimensionalSpace environment;
 
@@ -32,16 +33,15 @@ public class Controller<S extends Shape, P extends ProgrammableObject> {
      * Genera un controller
      */
     public Controller(){
-        this.program         = new RobotProgram();
+        this.program         = new ProgramLoader();
         this.parser          = new FollowMeParser(program);
     }
 
     /**
-     * Inizializza gli elementi oggetto della simulazione
+     * Inizializza gli elementi necessari alla simulazione
      * @param robotNumber il numero dei robot da generare entro un raggio +/- range
      */
     public void simulationSetup(Integer robotNumber,  Double range, Path programPath, Path environmentPath){
-
         List<Robot> currentRobots = generateRobotsRandomly(robotNumber,  program, range);
         List<Shape> loadedShapes = shapesSetup(environmentPath);
         this.program         = generateRobotProgram(programPath);
@@ -68,7 +68,7 @@ public class Controller<S extends Shape, P extends ProgrammableObject> {
      * @return allRobots lista dei robots creati
      */
     private List<Robot> generateRobotsRandomly(Integer objectNumber,
-                                              RobotProgram program,
+                                              ProgramLoader program,
                                               Double range){
         List<Robot> allRobots = new ArrayList<>();
         for(int t=0; t<objectNumber; t++){allRobots.add(new Robot(range, t));}
@@ -82,7 +82,7 @@ public class Controller<S extends Shape, P extends ProgrammableObject> {
      * @param programPath il percorso del file di programma
      * @return program programma eseguibile dai robot
      */
-    private RobotProgram generateRobotProgram(Path programPath) {
+    private ProgramLoader generateRobotProgram(Path programPath) {
             try {
                 this.parser.parseRobotProgram(programPath);
             } catch (IOException e) {
@@ -123,12 +123,16 @@ public class Controller<S extends Shape, P extends ProgrammableObject> {
         return shapeLoader.loadShapes();
     }
 
-    public RobotProgram getProgram(){return this.program;}
-
+    //TODO VERIFICARE UTILITà DI QUESTI DUE
+    /**
+     * Ritorna i robots instanziati sulla scena corrente
+     * @return robots una lista dei robot presenti nell'ambiente
+     */
     public List<Robot>getRobots(){ return this.environment.getProgrammableInSpace();}
 
+    /**
+     * Ritorna i robots instanziati sulla scena corrente
+     * @return robots una lista dei robot presenti nell'ambiente
+     */
     public List<Shape>getShapes(){ return this.environment.getShapesInSpace();}
-
-
-
 }

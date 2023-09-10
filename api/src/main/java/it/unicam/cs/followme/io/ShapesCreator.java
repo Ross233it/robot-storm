@@ -11,10 +11,11 @@ public class ShapesCreator implements ShapeBuilder{
     public Shape createShape(ShapeData shapeData) {
         TwoDimensionalPoint position = new TwoDimensionalPoint(shapeData.args()[0], shapeData.args()[1]);
         if(shapeData.shape().equals("CIRCLE")){
-            return new StaticCircle(position, shapeData.label(), shapeData.args()[2]);
+            return new StaticCircle<TwoDimensionalPoint>(position, shapeData.label(), shapeData.args()[2]);
         }else   if(shapeData.shape().equals("RECTANGLE")) {
-            return new StaticRectangle(position, shapeData.label(), shapeData.args()[2], shapeData.args()[3]);
+            return new StaticRectangle<TwoDimensionalPoint>(position, shapeData.label(), shapeData.args()[2], shapeData.args()[3]);
         }
         return null;
     }
+
 }

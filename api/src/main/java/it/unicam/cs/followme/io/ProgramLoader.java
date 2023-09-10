@@ -1,23 +1,21 @@
-package it.unicam.cs.followme.model.language;
+package it.unicam.cs.followme.io;
 
+import it.unicam.cs.followme.model.language.ProgramCommand;
 import it.unicam.cs.followme.utilities.FollowMeParserHandler;
 
 import java.util.ArrayList;
 
 /**
- * Questa classe ha la responsabilità di costruire il programma dei robot
- * rappresentato da una Array lista di {@Link ProgamCommand}
- * che rappresenta la lista di istruzioni che il destinatario deve eseguire.
+ * Questa classe ha la responsabilità di costruire il programma dei robot inteso come
+ * sequenza di istruzioni nel formato eseguibile per il destinatario.
  */
-public class RobotProgram implements FollowMeParserHandler{
+public class ProgramLoader implements FollowMeParserHandler{
 
 
     public ArrayList<ProgramCommand> commandList = new ArrayList<ProgramCommand>();
 
     @Override
-    public void parsingStarted(){
-        this.commandList = new ArrayList<ProgramCommand>();
-    }
+    public void parsingStarted(){ commandList.clear();}
 
     @Override
     public void parsingDone() {
@@ -44,8 +42,7 @@ public class RobotProgram implements FollowMeParserHandler{
 
     @Override
     public void followCommand(String label, double[] args) {
-        this.commandList.add(new ProgramCommand("FOLLOW", label, args));
-    }
+        this.commandList.add(new ProgramCommand("FOLLOW", label, args));}
 
     @Override
     public void stopCommand() {
@@ -55,7 +52,7 @@ public class RobotProgram implements FollowMeParserHandler{
     @Override
     public void continueCommand(int s) {
         Object arg = null;
-        while(s>0){this.commandList.add(new ProgramCommand("MOVE",arg)); s--;}
+        while(s > 0){this.commandList.add(new ProgramCommand("MOVE",arg)); s--;}
     }
 
     @Override
@@ -91,6 +88,4 @@ public class RobotProgram implements FollowMeParserHandler{
      * @param command un {@link ProgramCommand} da aggiungere
      */
     public void addCommand(ProgramCommand command){this.commandList.add(command);}
-
-    public void clearProgram(){this.commandList.clear();}
 }

@@ -9,7 +9,9 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.Group?>
 
-<BorderPane  xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.unicam.cs.followme.app.FollowMeAppController">
+<BorderPane  xmlns="http://javafx.com/javafx/20.0.1"
+             xmlns:fx="http://javafx.com/fxml/1"
+             fx:controller="it.unicam.cs.followme.app.FollowMeAppController">
 
     <center>
         <AnchorPane fx:id="fieldArea" prefHeight="200.0" prefWidth="339.0" BorderPane.alignment="CENTER" />
@@ -35,7 +37,7 @@
                         </ImageView>
                     </graphic>
                 </Button>
-                <Button fx:id="openButton" mnemonicParsing="false" >
+                <Button fx:id="openButton" mnemonicParsing="false" onAction="#onOpenFile">
                     <graphic>
                         <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                             <image>

@@ -77,7 +77,7 @@ public class RobotLanguageLoopConstructs {
         return currentCommandIndex+1;
     }
 
-
+//TODO VERIFICARE LA POSIZIONE MIGLIORE PER QUESTO METODO
     private static boolean checkShape(Object label,
                                List<Shape>shapes,
                                TwoDimensionalPoint positionToCheck){

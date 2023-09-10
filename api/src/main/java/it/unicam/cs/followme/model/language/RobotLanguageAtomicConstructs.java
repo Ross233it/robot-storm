@@ -61,6 +61,7 @@ public class RobotLanguageAtomicConstructs<A extends ProgramCommand, P extends P
         move(args, programmable);
     }
 
+    //TODO FARE IL CHECK DELLE FORME
     /**
      * Modifica la condizione corrente con quella passata come parametro quindi
      * la segnala ritornando la stringa della nuova label.
@@ -68,7 +69,6 @@ public class RobotLanguageAtomicConstructs<A extends ProgramCommand, P extends P
      */
     public static <P extends ProgrammableObject>  String signal(Object label, P programmable){
         String activeLabel = Utilities.fromObjectToString(label);
-
         programmable.setLabel(activeLabel);
         return activeLabel;
     }
