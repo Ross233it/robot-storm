@@ -101,4 +101,12 @@ public class CartesianAxisManager {
      * Ritorna la scala dimensionale degli assi
      */
     public Integer getScale(){return this.scale;}
+
+    public NumberAxis getxAxis() {
+        return xAxis;
+    }
+
+    public NumberAxis getyAxis() {
+        return yAxis;
+    }
 }

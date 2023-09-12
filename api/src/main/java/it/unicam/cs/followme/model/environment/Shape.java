@@ -1,7 +1,7 @@
 package it.unicam.cs.followme.model.environment;
 
 /**
- * La classe astrae il concetto di forma intesa come oggetto geometrico nello spazio.
+ * L'interfaccia astrae il concetto di forma intesa come oggetto geometrico nello spazio.
  * La forma ha un suo stato rappresentato da una label, delle dimensioni
  * specifiche e una posizione all'interno di uno spazio.
  *

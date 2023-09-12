@@ -1,8 +1,9 @@
-package it.unicam.cs.followme.model.programmables;
+package it.unicam.cs.followme.model.hardware;
 
 import it.unicam.cs.followme.io.ProgramLoader;
 import it.unicam.cs.followme.model.common.SpeedVector;
 import it.unicam.cs.followme.model.common.TwoDimensionalPoint;
+import it.unicam.cs.followme.model.software.RobotProgramExecutor;
 
 /**
  * Questa classe rappresenta un oggetto programmabile di tipo robot in grado
@@ -15,23 +16,26 @@ public class Robot implements ProgrammableObject<ProgramLoader, TwoDimensionalPo
     String label;
     SpeedVector direction;
     RobotMemory memory;
+    RobotProgramExecutor robotExcutor;
 
     /**
      * Crea un robot in posizione specificata come parametro e un identificativo univoco.
      * @param position la posizione del robot
      */
-    public Robot(TwoDimensionalPoint position, Integer robotId) {
+    public Robot(TwoDimensionalPoint position, Integer robotId, ProgramLoader program) {
         this.position = position;
-        this.label = "Init";
+        this.label = "";
         this.robotId = robotId;
         this.memory = new RobotMemory();
+        this.robotExcutor = new RobotProgramExecutor(this, program);
     }
 
     /**
      * Crea un robot in posizione randomica inclusa nel range
      * @param range il limite massimo lungo gli assi in cui il robot può essere posizionato.
      */
-    public Robot(Double range, Integer robotId) {this(new TwoDimensionalPoint(range), robotId);}
+    public Robot(Double range, Integer robotId, ProgramLoader program)
+        {this(new TwoDimensionalPoint(range), robotId, program);}
 
     /**
      * Rileava la posizione attuale del robot
@@ -86,4 +90,12 @@ public class Robot implements ProgrammableObject<ProgramLoader, TwoDimensionalPo
      * @return memory la memoria del robot {@link RobotMemory}
      */
     public RobotMemory getMemory() {return memory;}
+
+    public RobotProgramExecutor getRobotExcutor() {
+        return robotExcutor;
+    }
+
+    public void setRobotExcutor(RobotProgramExecutor robotExcutor) {
+        this.robotExcutor = robotExcutor;
+    }
 }

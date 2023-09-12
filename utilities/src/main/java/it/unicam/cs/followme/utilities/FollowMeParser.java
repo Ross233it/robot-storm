@@ -57,8 +57,6 @@ public final class FollowMeParser {
         this.counter = 0;
         List<ShapeData> data = new LinkedList<>();
         for (String line: lines) {
-            //TODO REMOVE PRINT
-            System.out.println("IO SONO SHAPE PARSER " + line);
             this.counter++;
             String[] elements = line.trim().toUpperCase().split(" ");
             if (checker.checkParameters(elements)) {

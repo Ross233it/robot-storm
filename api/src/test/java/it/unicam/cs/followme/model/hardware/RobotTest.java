@@ -1,4 +1,4 @@
-package it.unicam.cs.followme.model.programmables;
+package it.unicam.cs.followme.model.hardware;
 
 import it.unicam.cs.followme.model.common.SpeedVector;
 import it.unicam.cs.followme.model.common.TwoDimensionalPoint;
@@ -13,11 +13,11 @@ class RobotTest {
     private Robot positionedRobot;
 
     @BeforeEach
-    void setup(){
-        this.rangeRobot =  new Robot(20.0, 1);
-        TwoDimensionalPoint newPosition= new TwoDimensionalPoint(20.0, 50.0);
-        this.positionedRobot =  new Robot(newPosition, 2);
-    }
+//    void setup(){
+//        this.rangeRobot =  new Robot(20.0, 1);
+//        TwoDimensionalPoint newPosition= new TwoDimensionalPoint(20.0, 50.0);
+//        this.positionedRobot =  new Robot(newPosition, 2);
+//    }
 
     @Test
     @DisplayName("Verifica corretto posizionamento robot nel range")

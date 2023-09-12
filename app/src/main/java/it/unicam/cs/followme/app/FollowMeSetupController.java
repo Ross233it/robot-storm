@@ -1,5 +1,6 @@
 package it.unicam.cs.followme.app;
 
+import com.sun.javafx.charts.Legend;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -9,7 +10,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
-import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
@@ -35,6 +35,9 @@ public class FollowMeSetupController {
     private TextField robotNumberField;
     @FXML
     private TextField timeUnitField;
+    @FXML
+    private TextField simDurationField;
+
 
     /**
      *Consente il caricamento e la memorizzazione del file di ambiente
@@ -62,7 +65,8 @@ public class FollowMeSetupController {
             viewController.simSetup(this.programFile,
                                     this.environmentFile,
                                     Integer.parseInt(this.robotNumberField.getText()),
-                                    Integer.parseInt(this.timeUnitField.getText()));
+                                    Integer.parseInt(this.timeUnitField.getText()),
+                                    Integer.parseInt(this.simDurationField.getText()));
             Stage stage = (Stage) (((Node)event.getSource()).getScene().getWindow());
             Scene scene = new Scene(parent,800,800);
             stage.setScene(scene);

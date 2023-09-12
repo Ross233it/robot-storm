@@ -1,6 +1,6 @@
 package it.unicam.cs.followme.io;
 
-import it.unicam.cs.followme.model.language.ProgramCommand;
+import it.unicam.cs.followme.model.software.ProgramCommand;
 import it.unicam.cs.followme.utilities.FollowMeParserHandler;
 
 import java.util.ArrayList;
@@ -10,7 +10,6 @@ import java.util.ArrayList;
  * sequenza di istruzioni nel formato eseguibile per il destinatario.
  */
 public class ProgramLoader implements FollowMeParserHandler{
-
 
     public ArrayList<ProgramCommand> commandList = new ArrayList<ProgramCommand>();
 

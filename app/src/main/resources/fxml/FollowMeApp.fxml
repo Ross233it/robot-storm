@@ -13,123 +13,79 @@
              xmlns:fx="http://javafx.com/fxml/1"
              fx:controller="it.unicam.cs.followme.app.FollowMeAppController">
 
-    <center>
-        <AnchorPane fx:id="fieldArea" prefHeight="200.0" prefWidth="339.0" BorderPane.alignment="CENTER" />
-    </center>
-    <top>
-        <HBox BorderPane.alignment="CENTER">
-            <children>
-                <Button fx:id="clearButton" mnemonicParsing="false">
-                    <graphic>
-                        <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
-                            <image>
-                                <Image url="@../images/Clear-icon.png" />
-                            </image>
-                        </ImageView>
-                    </graphic>
-                </Button>
-                <Button fx:id="saveButton" mnemonicParsing="false" >
-                    <graphic>
-                        <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
-                            <image>
-                                <Image url="@../images/Save-icon.png" />
-                            </image>
-                        </ImageView>
-                    </graphic>
-                </Button>
-                <Button fx:id="openButton" mnemonicParsing="false" onAction="#onOpenFile">
-                    <graphic>
-                        <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
-                            <image>
-                                <Image url="@../images/Folder-Open-icon.png" />
-                            </image>
-                        </ImageView>
-                    </graphic>
-                </Button>
-                <Button fx:id="zoomInButton" mnemonicParsing="false"  onAction="#onZoomInCommand">
-                    <graphic>
-                        <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true" >
-                            <image>
-                                <Image url="@../images/Zoom-In-icon.png" />
-                            </image>
-                        </ImageView>
-                    </graphic>
-                </Button>
-                <Button fx:id="zoomOutButton" mnemonicParsing="false" onAction="#onZoomOutCommand" >
-                    <graphic>
-                        <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
-                            <image>
-                                <Image url="@../images/Zoom-Out-icon.png" />
-                            </image>
-                        </ImageView>
-                    </graphic>
-                </Button>
-                <Button fx:id="scrollLeftButton" mnemonicParsing="false" >
-                    <graphic>
-                        <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
-                            <image>
-                                <Image url="@../images/Button-Previous-icon-2.png" />
-                            </image>
-                        </ImageView>
-                    </graphic>
-                </Button>
-                <Button fx:id="scrollRightButton" mnemonicParsing="false" >
-                    <graphic>
-                        <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
-                            <image>
-                                <Image url="@../images/Button-Next-icon-2.png" />
-                            </image>
-                        </ImageView>
-                    </graphic>
-                </Button>
-                <Button fx:id="scrollUpButton" mnemonicParsing="false" >
-                    <graphic>
-                        <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
-                            <image>
-                                <Image url="@../images/Button-Upload-icon.png" />
-                            </image>
-                        </ImageView>
-                    </graphic>
-                </Button>
-                <Button fx:id="scrollDownButton" mnemonicParsing="false" >
-                    <graphic>
-                        <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
-                            <image>
-                                <Image url="@../images/Button-Download-icon.png" />
-                            </image>
-                        </ImageView>
-                    </graphic>
-                </Button>
-                <Button fx:id="stepBackwardButton" mnemonicParsing="false" >
-                    <graphic>
-                        <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
-                            <image>
-                                <Image url="@../images/Skip-backward-icon.png" />
-                            </image>
-                        </ImageView>
-                    </graphic>
-                </Button>
-                <Button  fx:id="stepForwardButton" mnemonicParsing="false">
-                    <graphic>
-                        <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
-                            <image>
-                                <Image url="@../images/Skip-forward-icon.png" />
-                            </image>
-                        </ImageView>
-                    </graphic>
-                </Button>
-            </children>
-            <padding>
-                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-            </padding>
-        </HBox>
-    </top>
-    <bottom></bottom>
-    <center>
-        <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="329.0" prefWidth="603.0" BorderPane.alignment="CENTER">
-            <children>
-                <Group fx:id="cartesian" />
-            </children>
-        </AnchorPane>
-    </center>
+   <center>
+      <AnchorPane fx:id="fieldArea" prefHeight="200.0" prefWidth="339.0" BorderPane.alignment="CENTER" />
+   </center>
+   <top>
+      <HBox BorderPane.alignment="CENTER">
+         <children>
+            <Button fx:id="clearButton" mnemonicParsing="false">
+               <graphic>
+                  <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/Clear-icon.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
+            <Button  fx:id="stepForwardButton" mnemonicParsing="false" onAction="#onStepForwardCommand">
+               <graphic>
+                  <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/Skip-forward-icon.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
+            <Button fx:id="saveButton" mnemonicParsing="false" onAction="#onSaveButton">
+               <graphic>
+                  <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/Save-icon.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
+            <Button fx:id="openButton" mnemonicParsing="false" onAction="#onOpenFile">
+               <graphic>
+                  <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/Folder-Open-icon.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
+            <Button fx:id="zoomInButton" mnemonicParsing="false"  onAction="#onZoomInCommand">
+               <graphic>
+                  <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true" >
+                     <image>
+                        <Image url="@../images/Zoom-In-icon.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
+            <Button fx:id="zoomOutButton" mnemonicParsing="false" onAction="#onZoomOutCommand" >
+               <graphic>
+                  <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/Zoom-Out-icon.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
+
+         </children>
+         <padding>
+            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+         </padding>
+      </HBox>
+   </top>
+   <bottom></bottom>
+   <center>
+      <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="329.0" prefWidth="603.0" BorderPane.alignment="CENTER">
+         <children>
+            <Group fx:id="cartesian" />
+         </children>
+      </AnchorPane>
+   </center>
 </BorderPane>

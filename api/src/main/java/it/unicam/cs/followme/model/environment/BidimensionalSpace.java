@@ -3,12 +3,10 @@ package it.unicam.cs.followme.model.environment;
 
 import it.unicam.cs.followme.model.common.TwoDimensionalPoint;
 import it.unicam.cs.followme.model.common.Utilities;
-import it.unicam.cs.followme.model.programmables.ProgrammableObject;
-import it.unicam.cs.followme.model.programmables.Robot;
+import it.unicam.cs.followme.model.hardware.ProgrammableObject;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**

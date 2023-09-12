@@ -1,4 +1,4 @@
-package it.unicam.cs.followme.model.language;
+package it.unicam.cs.followme.model.software;
 
 import it.unicam.cs.followme.model.common.TwoDimensionalPoint;
 import it.unicam.cs.followme.model.common.Utilities;
@@ -31,7 +31,6 @@ public class RobotLanguageLoopConstructs {
         this.toRepeatCommandIndex  = currentCommandIndex + 1;
         return toRepeatCommandIndex;
     }
-
 
     public Integer until(Integer currentCommandIndex, Object label, List<Shape>shapes, TwoDimensionalPoint positionToCheck){
         this.untilCommandIndex = currentCommandIndex;
@@ -68,6 +67,7 @@ public class RobotLanguageLoopConstructs {
             repetitionCount--;
             return toRepeatCommandIndex;
         }
+
         if ( foreverFirstCommandIndex != null && foreverFirstCommandIndex >= 0)
              return foreverFirstCommandIndex;
 

@@ -3,13 +3,12 @@ package it.unicam.cs.followme.controller;
 import it.unicam.cs.followme.io.ShapeBuilder;
 import it.unicam.cs.followme.io.ShapeLoader;
 import it.unicam.cs.followme.io.ShapesCreator;
-import it.unicam.cs.followme.model.common.TwoDimensionalPoint;
 import it.unicam.cs.followme.model.environment.BidimensionalSpace;
 import it.unicam.cs.followme.model.environment.Shape;
 import it.unicam.cs.followme.io.ProgramLoader;
-import it.unicam.cs.followme.model.programmables.ProgrammableObject;
-import it.unicam.cs.followme.model.programmables.Robot;
-import it.unicam.cs.followme.model.programmables.RobotActivities;
+import it.unicam.cs.followme.model.software.RobotProgramExecutor;
+import it.unicam.cs.followme.model.hardware.ProgrammableObject;
+import it.unicam.cs.followme.model.hardware.Robot;
 import it.unicam.cs.followme.utilities.FollowMeParser;
 import it.unicam.cs.followme.utilities.FollowMeParserException;
 
@@ -17,17 +16,15 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.ArrayList;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
-import it.unicam.cs.followme.model.timeManagment.SimulationTimer;
 
 public class Controller<S extends Shape, P extends ProgrammableObject> {
 
     private ProgramLoader program;
     private final FollowMeParser parser ;
     private BidimensionalSpace environment;
+    //private List<Callable<Integer>> executors;
+    private List<RobotProgramExecutor> executors;
 
     /**
      * Genera un controller
@@ -46,17 +43,7 @@ public class Controller<S extends Shape, P extends ProgrammableObject> {
         List<Shape> loadedShapes = shapesSetup(environmentPath);
         this.program         = generateRobotProgram(programPath);
         this.environment = new BidimensionalSpace(currentRobots, loadedShapes);
-    }
-
-    /**
-     * Avvia il flusso di esecuzione della simulaizone.
-     * @param timeUnit la velocità in millisecondi della simulazione
-     * @param timeUnit
-     */
-    public void runSimulation(Integer timeUnit){
-        SimulationTimer timer = new SimulationTimer(timeUnit);
-        timer.start();
-        launchRobots();
+        this.executors       = launchRobots();
     }
 
     /**
@@ -71,7 +58,7 @@ public class Controller<S extends Shape, P extends ProgrammableObject> {
                                               ProgramLoader program,
                                               Double range){
         List<Robot> allRobots = new ArrayList<>();
-        for(int t=0; t<objectNumber; t++){allRobots.add(new Robot(range, t));}
+        for(int t=0; t<objectNumber; t++){allRobots.add(new Robot(range, t, program));}
         return allRobots;
     }
 
@@ -97,21 +84,59 @@ public class Controller<S extends Shape, P extends ProgrammableObject> {
      * Ricevuta una lista di Robot raccoglie i loro programExecutor, avvia un ExecutorService
      * e lancia l'esecuzione parallela dei rispettivi programmi su tutti i robot della lista.
      */
-    public void launchRobots(){
-            List<Robot> allRobots = this.environment.getProgrammableInSpace();
+//    public List<Callable<Integer>> launchRobots() {
+//        List<Robot> allRobots = this.environment.getProgrammableInSpace();
+//
+//        List<Callable<Integer>> robotExecutors = allRobots.stream()
+//                .map(robot -> robot.getRobotExcutor())
+//                .collect(Collectors.toList());
+//
+//        return robotExecutors;
+//    }
 
-            List<Callable<RobotActivities>> robotExecutors = allRobots.stream()
-                    .map(robot-> new RobotActivities(robot, program))
-                    .collect(Collectors.toList());
+    /**
+     * Identifica  e raccoglie i ProgramExecutors di tutti i robot presenti nell'ambiente
+     * @return robotExecutors lista di {@Link RobotProgramExecutor}
+     */
+    public List<RobotProgramExecutor> launchRobots() {
+        List<Robot> allRobots = this.environment.getProgrammableInSpace();
 
-            ExecutorService executor = Executors.newCachedThreadPool();
-            try {
-                executor.invokeAll(robotExecutors);
-            } catch (InterruptedException e) {
-                 throw new RuntimeException(e);
-            }
-            executor.shutdown();
+        List<RobotProgramExecutor> robotExecutors = allRobots.stream()
+                .map(robot -> robot.getRobotExcutor())
+                .collect(Collectors.toList());
+        return robotExecutors;
     }
+
+    /**
+     * Avvia il {@link RobotProgramExecutor} per ciascun robot
+     * @return
+     */
+    public boolean runNextRobotCommand() {
+        System.out.println("ESCUZIONE DI RUN ROBOT COMMAND");
+        executors.stream().forEach(executor -> {
+                executor.executeProgram();
+    });
+
+//TODO VERIFICARE SE SI PUO' FARE IN PARALLELO
+
+//        ExecutorService executor = Executors.newCachedThreadPool();
+//            try {
+//                List<Future<Integer>> futures =  executor.invokeAll(executors);
+//                for (Future<Integer> future : futures) {
+//                    future.get();}
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            } catch (ExecutionException e) {
+//                throw new RuntimeException(e);
+//            } finally {
+//                executor.shutdown();
+//                return true;
+//            }
+        return true;
+    }
+
+
+
 
     /**
      * Genera le forme geometriche statiche per l'inserimento nell'environment

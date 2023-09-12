@@ -1,6 +1,4 @@
-package it.unicam.cs.followme.model.language;
-
-import it.unicam.cs.followme.model.programmables.ProgrammableObject;
+package it.unicam.cs.followme.model.software;
 
 /**
  * Astrae il concetto di linguaggio di programmazione per gli oggetti che

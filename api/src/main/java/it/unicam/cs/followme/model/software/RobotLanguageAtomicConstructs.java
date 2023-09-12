@@ -1,12 +1,12 @@
-package it.unicam.cs.followme.model.language;
+package it.unicam.cs.followme.model.software;
 
 import it.unicam.cs.followme.model.common.Coordinates;
 import it.unicam.cs.followme.model.common.SpeedVector;
 import it.unicam.cs.followme.model.common.TwoDimensionalPoint;
 import it.unicam.cs.followme.model.common.Utilities;
 import it.unicam.cs.followme.model.environment.BidimensionalSpace;
-import it.unicam.cs.followme.model.programmables.ProgrammableObject;
-import it.unicam.cs.followme.model.programmables.Robot;
+import it.unicam.cs.followme.model.hardware.ProgrammableObject;
+import it.unicam.cs.followme.model.hardware.Robot;
 
 import java.util.stream.Stream;
 
@@ -15,44 +15,42 @@ import java.util.stream.Stream;
  * che un oggetto programmabile può eseguire con riferimento al Linguaggio dei Robot
  * Le stringhe vengono inserite in una mappa che verra utilizzata per
  * da passare ai robot per l'effettiva esecuzione
- *
  */
-public class RobotLanguageAtomicConstructs<A extends ProgramCommand, P extends ProgrammableObject, V extends Coordinates> /*implements ProgramLanguage<A, P> */{
+public class RobotLanguageAtomicConstructs{
 
     /**
      * Muove progressivamente un robot nella direzione ed alla velocità indicati nei parametri.
      * @param param array contentente x e y di direzione e velocità di spostamento
      * @param programmable il robot destinatario del comando.
      */
-    public static <P extends ProgrammableObject, V extends TwoDimensionalPoint>
-    void move(Object param, P programmable){
-        //TODO REMOVE PRINT
-        TwoDimensionalPoint prima = (TwoDimensionalPoint) programmable.getPosition();
-        System.out.println(prima.getX() + " "+ prima.getY());
-
-        double[] args = Utilities.fromObjectToDoubleArray(param);
+    public static
+    void move(double[] args, ProgrammableObject programmable){
         SpeedVector speedVector;
-        if(param == null){speedVector = (SpeedVector) programmable.getDirection();}
-        else{speedVector = new SpeedVector(args[0], args[1], args[2]);}
+        if(args.length == 0){speedVector = (SpeedVector) programmable.getDirection();}
+        else{
+             speedVector = new SpeedVector(args[0], args[1], args[2]);
+             programmable.setDirection(speedVector);}
+
         double vector = Utilities.getDiagonal(speedVector.getX(), speedVector.getY());
         double newX = Utilities.getSideFromDiagonal(speedVector.getSpeed(), vector,  speedVector.getX());
         double newY = Utilities.getSideFromDiagonal(speedVector.getSpeed(), vector,  speedVector.getY());
+
         programmable.setPosition(new TwoDimensionalPoint(newX+((TwoDimensionalPoint) programmable.getPosition()).getX(), newY+((TwoDimensionalPoint) programmable.getPosition()).getY()));
 
         //TODO REMOVE PRINT
-        TwoDimensionalPoint dopo = (TwoDimensionalPoint) programmable.getPosition();
-        System.out.println(dopo.getX() + " "+ dopo.getY());
+//        TwoDimensionalPoint dopo = (TwoDimensionalPoint) programmable.getPosition();
+//        System.out.println(dopo.getX() + " "+ dopo.getY());
+        System.out.println("eseguito il comando move per ID" + programmable.getId());
     }
 
     /**
      * Muove un oggetto in modo randomico considerati due valori min e max rispettivamente
      * per le coordinate x e y di direzione con una velocità espressa in metri al secondo.
-     * @param param array contenente le coordinate x e y e la velocità di spostamento
+     * @param args array contenente le coordinate x e y e la velocità di spostamento
      * @param programmable l'oggetto destinatario dello spostamento.
-     * @param <P> sono ammessi oggetti che implementano l'interfaccia ProgrammableObject
+     * @param programmable sono ammessi oggetti che implementano l'interfaccia ProgrammableObject
      */
-    public static <P extends ProgrammableObject> void moverandom(Object param, P programmable){
-        double[] args = Utilities.fromObjectToDoubleArray(param);
+    public static void moverandom(double[] args, ProgrammableObject programmable){
         double[] xRange = Utilities.sortTwoDouble(args[0], args[1]);
         double[] yRange = Utilities.sortTwoDouble(args[2], args[3]);
         args[0] = Utilities.randomScaledNumber(xRange[0],  xRange[1]);
@@ -67,10 +65,10 @@ public class RobotLanguageAtomicConstructs<A extends ProgramCommand, P extends P
      * la segnala ritornando la stringa della nuova label.
      * @param programmable il programmabile destinatario del comando
      */
-    public static <P extends ProgrammableObject>  String signal(Object label, P programmable){
-        String activeLabel = Utilities.fromObjectToString(label);
-        programmable.setLabel(activeLabel);
-        return activeLabel;
+    public static <P extends ProgrammableObject>  String signal(String label, P programmable){
+
+        programmable.setLabel(alabel);
+        return label;
     }
 
     /**
