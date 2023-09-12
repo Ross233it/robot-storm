@@ -104,46 +104,29 @@ public class RobotProgramExecutor<T> implements ProgramExecutor/* ,Callable<Inte
      * Avvia i comandi di base sul robot corrente
      * @param command il comando da eseguire {@link ProgramCommand}
      */
-//    private <T> void handleDefaultCommand(String instruction, ProgramCommand command) {
-//        T parameters = (T) command.getParameter();
-//        callMethod(instruction,  parameters);
-//        takeMemory(this.currentCommandIndex);
-//    }
-    private <T> void handleDefaultCommand(String instruction, ProgramCommand command) {
-        callMethod(instruction,  command);
-        takeMemory(this.currentCommandIndex);
+    private void handleDefaultCommand(String instruction, ProgramCommand command) {
+        callMethod(instruction, command.getParameter());
+        takeMemory(this.currentTime);
     }
-
 
     /**
      * Richiama il metodo appropriato in relazione all'istruzione passata come argomento.
      * @param instruction istruzione da eseguire;
      * @param parameters  parametri per l'esecuzione.
      */
-    private void callMethod(String instruction, T parameters){
-      try { Class<?> classe =  RobotLanguageAtomicConstructs.class;
-            classe.getMethod(instruction, (Class<?>) parameters, ProgrammableObject.class).invoke(this.robot, parameters, this.robot);
+    private void callMethod(String instruction, Object parameters){
+        try { Class<?> classe =  RobotLanguageAtomicConstructs.class;
+            classe.getMethod(instruction, Object.class, ProgrammableObject.class).invoke(this.robot, parameters, this.robot);
             this.currentCommandIndex++;
-       } catch (IllegalAccessException e) {
+        } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
-       } catch (InvocationTargetException e) {
+        } catch (InvocationTargetException e) {
             throw new RuntimeException(e);
-       } catch (NoSuchMethodException e) {
+        } catch (NoSuchMethodException e) {
             throw new RuntimeException(e);
-       }
+        }
     }
-//    private void callMethod(String instruction, ProgramCommand command){
-//        try { Class<?> classe =  RobotLanguageAtomicConstructs.class;
-//            classe.getMethod(instruction, ProgramCommand.class , ProgrammableObject.class).invoke(this.robot, parameters, this.robot);
-//            this.currentCommandIndex++;
-//        } catch (IllegalAccessException e) {
-//            throw new RuntimeException(e);
-//        } catch (InvocationTargetException e) {
-//            throw new RuntimeException(e);
-//        } catch (NoSuchMethodException e) {
-//            throw new RuntimeException(e);
-//        }
-    }
+
     /**
      * Memorizza le istruzioni avvenute nella memoria del robot.
      * @param time
