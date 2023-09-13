@@ -12,3 +12,4 @@
 }
 .smallLabel{ -fx-font-size: 18px}
 .bigLabel{ -fx-font-size: 30px}
+.timeLabelStyle{-fx-font-size: 12px; -fx-alignment: center;}

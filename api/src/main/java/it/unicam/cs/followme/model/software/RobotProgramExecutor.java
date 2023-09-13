@@ -42,11 +42,10 @@ public class RobotProgramExecutor<T> implements ProgramExecutor, Callable<Intege
         if(currentCommandIndex <= program.size()-1) {
                 ProgramCommand currentCommand = program.get(currentCommandIndex);
                 String instruction = currentCommand.getInstruction().trim().replace(" ", "").toLowerCase();
+
                 //todo remove print
-                System.out.println("Thread : " +Thread.currentThread().getId());
-                System.out.println("CURRENT PROGRAM INDEX : " + currentCommandIndex);
-                System.out.println("LUNGHEZZA PROGRAMMA : "   + program.size());
-                System.out.println("ISTRUZIONE : "   + currentCommand.getInstruction());
+                printThings(currentCommand);
+
                 switch (instruction) {
                     case "repeat"   -> handleRepeatCommand(currentCommand);
                     case "doforever"-> handleDoForeverCommand(currentCommand);
@@ -142,5 +141,13 @@ public class RobotProgramExecutor<T> implements ProgramExecutor, Callable<Intege
     @Override
     public void executeProgram() {
         call();
+    }
+
+    //todo remove methodd
+    private void printThings(ProgramCommand currentCommand){
+        System.out.println("Thread : " +Thread.currentThread().getId());
+        System.out.println("CURRENT PROGRAM INDEX : " + currentCommandIndex);
+        System.out.println("LUNGHEZZA PROGRAMMA : "   + program.size());
+        System.out.println("ISTRUZIONE : "   + currentCommand.getInstruction());
     }
 }

@@ -81,6 +81,4 @@ public class BidimensionalSpace<S extends Shape, P extends ProgrammableObject> i
                 );
         return streamOfNeighbours;
     }
-
-
 }

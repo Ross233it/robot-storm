@@ -1,14 +1,13 @@
 package it.unicam.cs.followme.model.environment;
 
-
 import it.unicam.cs.followme.model.common.Coordinates;
-import it.unicam.cs.followme.model.common.Utilities;
+import it.unicam.cs.followme.model.common.TwoDimensionalPoint;
 
 /**
  * Rappresenta la forma statica circolare che può essere disposta nello spazio 2D.
  */
-public class StaticCircle<C extends Coordinates<Double>> implements Shape<C> {
-    private final C position;
+public class StaticCircle<C extends Coordinates> implements Shape<TwoDimensionalPoint>{
+    private TwoDimensionalPoint position;
     private String label;
     private final Double radius;
 
@@ -20,7 +19,7 @@ public class StaticCircle<C extends Coordinates<Double>> implements Shape<C> {
      * @param label  stato/condizione della figura
      * @throws IllegalArgumentException se il raggio del cerchio è negativo
      */
-    public StaticCircle(C position, String label, Double radius) {
+    public StaticCircle(TwoDimensionalPoint position, String label, Double radius) {
         if(radius < 0)
             throw new IllegalArgumentException("Negative circle radius");
         this.position = position;
@@ -34,7 +33,7 @@ public class StaticCircle<C extends Coordinates<Double>> implements Shape<C> {
      * @return FALSE se il punto è esterno alla circonferenza
      */
     @Override
-    public Boolean isInternal (C pointToCheck){
+    public Boolean isInternal(TwoDimensionalPoint pointToCheck){
         return Math.sqrt(Math.pow(pointToCheck.getX() - this.position.getX(), 2)
                 + Math.pow(pointToCheck.getY() - this.position.getY(), 2)) <=  radius;
     }
@@ -44,24 +43,25 @@ public class StaticCircle<C extends Coordinates<Double>> implements Shape<C> {
      * @return label condizione del cerchio
      */
     @Override
-    public String getLabel() {
-        return label;
-    }
+    public String getLabel() {return label;}
 
     /**
      * Ritorna il raggio del cerchio
      * @return radius condizione del cerchio
      */
-    public Double getRadius() {
-        return radius;
-    }
+    public Double getRadius() {return radius;}
 
     /**
      * Ritorna la posizione del punto di centro della circonferenza.
      * @return position centro del StaticCircle
      */
     @Override
-    public C getPosition() {
-        return position;
-    }
+    public TwoDimensionalPoint getPosition() {return position;}
+
+    /**
+     * Posiziona il cerchio su una nuova posizione
+     * @param pos
+     */
+    @Override
+    public void setPosition(TwoDimensionalPoint pos) {position = pos;}
 }

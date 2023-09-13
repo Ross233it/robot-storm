@@ -49,8 +49,9 @@ public class ProgramLoader implements FollowMeParserHandler{
 
     @Override
     public void continueCommand(int s) {
-        Object arg = null;
-        while(s > 0){this.commandList.add(new ProgramCommand<>("MOVE",arg)); s--;}
+        double[] arg = {};
+        for(int i=0; i<s; i++)
+            this.commandList.add(new ProgramCommand<>("MOVE",arg));
     }
 
     @Override

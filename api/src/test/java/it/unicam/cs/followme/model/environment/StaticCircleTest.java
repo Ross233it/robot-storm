@@ -12,13 +12,13 @@ class StaticCircleTest {
     @BeforeAll
     public static void setup(){
         TwoDimensionalPoint circleCenter = new TwoDimensionalPoint(10.0, -10.0);
-        circleToTest = new StaticCircle<TwoDimensionalPoint>(circleCenter, "_testCircleLabel", 5.0);
+        circleToTest = new StaticCircle(circleCenter, "_testCircleLabel", 5.0);
     }
 
     @Test
     void constructor(){
         TwoDimensionalPoint point = new TwoDimensionalPoint(10.0, -10.0);
-        assertThrows(IllegalArgumentException.class, () -> new StaticCircle<TwoDimensionalPoint>(point, "string", -5.0));
+        assertThrows(IllegalArgumentException.class, () -> new StaticCircle(point, "string", -5.0));
     }
 
     @Test

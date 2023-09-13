@@ -1,5 +1,7 @@
 package it.unicam.cs.followme.model.hardware;
 
+import it.unicam.cs.followme.model.environment.Positionable;
+
 /**
  * Astrae il concetto di 'oggetto programmabile', ovvero
  * un elemento fisico inserito nell'ambiente, che possiede uno stato definito in una label,
@@ -8,7 +10,7 @@ package it.unicam.cs.followme.model.hardware;
  * @param V oggetti riferiti allo spostamento del programmabile
  */
 
-public interface ProgrammableObject<C, V>{
+public interface ProgrammableObject<V, C> extends Positionable<C> {
 
     String getLabel();
 
@@ -19,8 +21,8 @@ public interface ProgrammableObject<C, V>{
     void setDirection(V vec);
 
     int getId();
-
-    C getPosition();
-
-    void setPosition(C pos);
+//
+//    C getPosition();
+//
+//    void setPosition(C pos);
 }

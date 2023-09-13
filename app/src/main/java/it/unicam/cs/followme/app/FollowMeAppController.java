@@ -184,12 +184,7 @@ public class FollowMeAppController{
         controller.runNextRobotCommand();
         currentTime++;
         rebuildScene(axes.getScale());
-//        if(currentTime>= simDuration) {
-//            currentTime++;
-//        currentRobots.stream()
-//                .filter(robot -> robot.getMemory().getState(currentTime).position() != null)
-//                .forEach(robot -> robot.setPosition(robot.getMemory().getState(currentTime).position()));
-//        rebuildScene(axes.getScale());}
+
     }
 
     private void simStepBackExecution(){
@@ -228,8 +223,7 @@ public class FollowMeAppController{
             if (currentTime < simDuration) {
                 if (controller.runNextRobotCommand()) {
                     rebuildScene(axes.getScale());
-                    currentTime++;
-                    printTime(currentTime);}
+                    currentTime++;}
             }
         }));
         timeline.setCycleCount(simDuration);
@@ -244,6 +238,7 @@ public class FollowMeAppController{
         axes.axisSetup(axisScale, cartesian);
         robotInitialize(this.cartesian);
         displayShapes();
+        printTime(currentTime);
     }
 
     public void printTime(Integer time){
@@ -311,7 +306,6 @@ public class FollowMeAppController{
 
     private void robotSetup(){
         this.cartesian.getChildren().removeAll(this.symbolMap.keySet());
-        System.out.println("IOSONOROBOTINITIALIZE!!!!!");
         symbolMap = this.currentRobots.parallelStream()
                 .filter(e-> e.getPosition().getX()< axes.getScale() && e.getPosition().getY()<axes.getScale())
                 .collect(Collectors.toMap(
@@ -331,13 +325,12 @@ public class FollowMeAppController{
     }
 
 
-
     /**
      * Genera una figura circolare nell'interfaccia grafica
      * @param staticCircle un oggetto di tipo {@link StaticCircle}
      * @param cartesian un gruppo target.
      */
-    public void addCircle(StaticCircle<TwoDimensionalPoint> staticCircle, Group cartesian){
+    public void addCircle(StaticCircle staticCircle, Group cartesian){
        Circle sceneCircle = new Circle(
                AXES_ZERO + (staticCircle.getPosition().getX() * axes.getTickSize()),
                AXES_ZERO - (staticCircle.getPosition().getY() * axes.getTickSize()),
@@ -362,15 +355,6 @@ public class FollowMeAppController{
         sceneRectangle.setFill(Color.BLUE);
         cartesian.getChildren().add(sceneRectangle);
     }
-//TODO VEDERE SE SERVE
-    public double tickSize(){ return axes.getTickSize();}
-
-
-//    public double getNewPosition(Positionable positionable){
-//        ((positionable.getPosition().getX() * axes.getTickSize()) - (positionable.getWidth() * axes.getTickSize()/2));
-//
-//
-//    }
 }
 
 

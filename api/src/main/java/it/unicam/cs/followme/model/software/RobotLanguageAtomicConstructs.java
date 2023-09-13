@@ -1,6 +1,6 @@
 package it.unicam.cs.followme.model.software;
 
-import it.unicam.cs.followme.model.common.Coordinates;
+
 import it.unicam.cs.followme.model.common.SpeedVector;
 import it.unicam.cs.followme.model.common.TwoDimensionalPoint;
 import it.unicam.cs.followme.model.common.Utilities;
@@ -19,9 +19,10 @@ import java.util.stream.Stream;
 
     public class RobotLanguageAtomicConstructs{
 
+
         /**
          * Muove progressivamente un robot nella direzione ed alla velocità indicati nei parametri.
-         * @param param array contentente x e y di direzione e velocità di spostamento
+         * @param args array contentente x e y di direzione e velocità di spostamento
          * @param programmable il robot destinatario del comando.
          */
         public static void move(double[] args, ProgrammableObject programmable){
@@ -29,14 +30,11 @@ import java.util.stream.Stream;
             TwoDimensionalPoint prima = (TwoDimensionalPoint) programmable.getPosition();
             System.out.println(prima.getX() + " "+ prima.getY());
 
-            //double[] args = Utilities.fromObjectToDoubleArray(param);
             SpeedVector speedVector;
             if(args.length == 0){speedVector = (SpeedVector) programmable.getDirection();}
             else{speedVector = new SpeedVector(args[0], args[1], args[2]);}
-            double vector = Utilities.getDiagonal(speedVector.getX(), speedVector.getY());
-            double newX = Utilities.getSideFromDiagonal(speedVector.getSpeed(), vector,  speedVector.getX());
-            double newY = Utilities.getSideFromDiagonal(speedVector.getSpeed(), vector,  speedVector.getY());
-            programmable.setPosition(new TwoDimensionalPoint(newX+((TwoDimensionalPoint) programmable.getPosition()).getX(), newY+((TwoDimensionalPoint) programmable.getPosition()).getY()));
+            programmable.setDirection(speedVector);
+            programmable.setPosition(calculateNewPosition(speedVector, programmable));
 
             //TODO REMOVE PRINT
             TwoDimensionalPoint dopo = (TwoDimensionalPoint) programmable.getPosition();
@@ -46,9 +44,8 @@ import java.util.stream.Stream;
         /**
          * Muove un oggetto in modo randomico considerati due valori min e max rispettivamente
          * per le coordinate x e y di direzione con una velocità espressa in metri al secondo.
-         * @param param array contenente le coordinate x e y e la velocità di spostamento
-         * @param programmable l'oggetto destinatario dello spostamento.
-         * @param <P> sono ammessi oggetti che implementano l'interfaccia ProgrammableObject
+         * @param args array contenente le coordinate x e y e la velocità di spostamento
+         * @param programmable ammessi oggetti programmabili
          */
         public static  void moverandom(double[] args, ProgrammableObject programmable){
             double[] xRange = Utilities.sortTwoDouble(args[0], args[1]);
@@ -63,12 +60,12 @@ import java.util.stream.Stream;
         /**
          * Modifica la condizione corrente con quella passata come parametro quindi
          * la segnala ritornando la stringa della nuova label.
+         * @param label da segnalare
          * @param programmable il programmabile destinatario del comando
          */
         public static  String signal(String label, ProgrammableObject programmable){
-            String activeLabel = Utilities.fromObjectToString(label);
-            programmable.setLabel(activeLabel);
-            return activeLabel;
+            programmable.setLabel(label);
+            return label;
         }
 
         /**
@@ -93,10 +90,10 @@ import java.util.stream.Stream;
          * Se l'oggetto programmabile sta segnalando una specifica condizione passata come
          * parametro, interrompe la segnalazione e ritorna la stringa vuota che rappresenta
          * la sua label
+         * @param labelToCheck la label da
          * @param programmable il programmabile destinatario del comando
          */
-        public static String unsignal(String label, ProgrammableObject programmable){
-            String labelToCheck = Utilities.fromObjectToString(label);
+        public static String unsignal(String labelToCheck, ProgrammableObject programmable){
             if(programmable.getLabel().equals(labelToCheck))
                 programmable.setLabel("");
             return programmable.getLabel();
@@ -108,6 +105,14 @@ import java.util.stream.Stream;
          */
         public static void stop(Object empty, ProgrammableObject programmable){
             programmable.setPosition(programmable.getPosition());
+        }
+
+        private static TwoDimensionalPoint calculateNewPosition(SpeedVector speedVector, ProgrammableObject programmable){
+            double vector = Utilities.getDiagonal(speedVector.getX(), speedVector.getY());
+            double newX = Utilities.getSideFromDiagonal(speedVector.getSpeed(), vector,  speedVector.getX());
+            double newY = Utilities.getSideFromDiagonal(speedVector.getSpeed(), vector,  speedVector.getY());
+            return new TwoDimensionalPoint(newX+((TwoDimensionalPoint) programmable.getPosition()).getX(),
+                                           newY+((TwoDimensionalPoint) programmable.getPosition()).getY());
         }
 
         /**
@@ -127,4 +132,7 @@ import java.util.stream.Stream;
         private static double averageY(Stream<Robot> neighbours){
             return  neighbours.mapToDouble(t->t.getPosition().getY()).average().orElse(0.0);
         }
+
+
+
     }

@@ -17,7 +17,6 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.concurrent.*;
-import java.util.stream.Collectors;
 
 public class Controller<S extends Shape, P extends ProgrammableObject> {
 
@@ -70,13 +69,13 @@ public class Controller<S extends Shape, P extends ProgrammableObject> {
      * @return program programma eseguibile dai robot
      */
     private ProgramLoader generateRobotProgram(Path programPath) {
-            try {
-                this.parser.parseRobotProgram(programPath);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            } catch (FollowMeParserException e) {
-                throw new RuntimeException(e);
-            }
+        try {
+            this.parser.parseRobotProgram(programPath);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (FollowMeParserException e) {
+            throw new RuntimeException(e);
+        }
         return this.program;
     }
 
@@ -84,8 +83,7 @@ public class Controller<S extends Shape, P extends ProgrammableObject> {
      * Identifica  e raccoglie i ProgramExecutors di tutti i robot presenti nell'ambiente
      * @return robotExecutors lista di {@Link RobotProgramExecutor}
      */
-
-    public List<Callable<Integer>> launchRobots() {
+    private List<Callable<Integer>> launchRobots() {
         List<Robot> allRobots = this.environment.getProgrammableInSpace();
 
         List<Callable<Integer>> robotExecutors = allRobots.stream()
@@ -100,7 +98,6 @@ public class Controller<S extends Shape, P extends ProgrammableObject> {
      * multithread
      * @return true se la computazione è terminata correttamente.
      */
-
     public boolean runNextRobotCommand() {
         ExecutorService executor = Executors.newCachedThreadPool();
             try {

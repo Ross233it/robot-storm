@@ -7,7 +7,7 @@ package it.unicam.cs.followme.model.environment;
  *
  * @Param <P> parametro generico identifica una posizione nello spazio
  */
-public interface Shape<C>{
+public interface Shape<C> extends Positionable<C>{
      /**
      * Data una posizione nello spazioe, rileva se il punto è interno o esterno alla forma
      * @Param <P> parametro generico identifica una posizione nello spazio
