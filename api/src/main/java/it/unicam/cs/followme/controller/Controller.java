@@ -25,10 +25,9 @@ public class Controller<S extends Shape, P extends ProgrammableObject> {
     private final FollowMeParser parser ;
     private BidimensionalSpace environment;
     private List<Callable<Integer>> executors;
-    //private List<RobotProgramExecutor> executors;
 
     /**
-     * Genera un controller
+     * Metodo costruttore Controller
      */
     public Controller(){
         this.program         = new ProgramLoader();
@@ -82,31 +81,9 @@ public class Controller<S extends Shape, P extends ProgrammableObject> {
     }
 
     /**
-     * Ricevuta una lista di Robot raccoglie i loro programExecutor, avvia un ExecutorService
-     * e lancia l'esecuzione parallela dei rispettivi programmi su tutti i robot della lista.
-     */
-//    public List<Callable<Integer>> launchRobots() {
-//        List<Robot> allRobots = this.environment.getProgrammableInSpace();
-//
-//        List<Callable<Integer>> robotExecutors = allRobots.stream()
-//                .map(robot -> robot.getRobotExcutor())
-//                .collect(Collectors.toList());
-//
-//        return robotExecutors;
-//    }
-
-    /**
      * Identifica  e raccoglie i ProgramExecutors di tutti i robot presenti nell'ambiente
      * @return robotExecutors lista di {@Link RobotProgramExecutor}
      */
-//    public List<RobotProgramExecutor> launchRobots() {
-//        List<Robot> allRobots = this.environment.getProgrammableInSpace();
-//
-//        List<RobotProgramExecutor> robotExecutors = allRobots.stream()
-//                .map(robot -> robot.getRobotExcutor())
-//                .collect(Collectors.toList());
-//        return robotExecutors;
-//    }
 
     public List<Callable<Integer>> launchRobots() {
         List<Robot> allRobots = this.environment.getProgrammableInSpace();
@@ -115,22 +92,16 @@ public class Controller<S extends Shape, P extends ProgrammableObject> {
                 .map(robot -> robot.getRobotExcutor())
                 .map(executor -> (Callable<Integer>) executor)
                 .collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
-        //.collect(Collectors.<Callable<Integer>>toList());
         return robotExecutors;
     }
 
     /**
-     * Avvia il {@link RobotProgramExecutor} per ciascun robot
-     * @return
+     * Avvia il {@link RobotProgramExecutor} per ciascun robot effettuando esecuzione
+     * multithread
+     * @return true se la computazione è terminata correttamente.
      */
-//    public boolean runNextRobotCommand() {
-//        System.out.println("ESCUZIONE DI RUN ROBOT COMMAND");
-//        executors.stream().forEach(executor -> {
-//                executor.executeProgram();
-//    });
 
-//TODO VERIFICARE SE SI PUO' FARE IN PARALLELO
-public boolean runNextRobotCommand() {
+    public boolean runNextRobotCommand() {
         ExecutorService executor = Executors.newCachedThreadPool();
             try {
                 List<Future<Integer>> futures =  executor.invokeAll(executors);
@@ -168,6 +139,4 @@ public boolean runNextRobotCommand() {
      * @return robots una lista dei robot presenti nell'ambiente
      */
     public List<Shape>getShapes(){ return this.environment.getShapesInSpace();}
-
-    
 }

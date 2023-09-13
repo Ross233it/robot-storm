@@ -19,7 +19,7 @@
    <top>
       <HBox BorderPane.alignment="CENTER">
          <children>
-            <Button fx:id="clearButton" mnemonicParsing="false">
+            <Button fx:id="clearButton" mnemonicParsing="false" onAction="#onClearCommand">
                <graphic>
                   <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                      <image>
@@ -37,11 +37,11 @@
                   </ImageView>
                </graphic>
             </Button>
-            <Button fx:id="saveButton" mnemonicParsing="false" onAction="#onSaveButton">
+            <Button fx:id="playButton" mnemonicParsing="false" onAction="#onPlayButton">
                <graphic>
                   <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../images/Save-icon.png" />
+                        <Image url="@../images/Button-Next-icon-2.png" />
                      </image>
                   </ImageView>
                </graphic>

@@ -5,9 +5,8 @@ package it.unicam.cs.followme.model.software;
  * L'executor lancia l'esecuzioni delle istruzioni ricevute dal programma
  */
 public interface ProgramExecutor {
-
     /**
      * Il metodo che si occupa di avviare le istruzioni
      */
-    public void executeProgram();
+    void executeProgram();
 }

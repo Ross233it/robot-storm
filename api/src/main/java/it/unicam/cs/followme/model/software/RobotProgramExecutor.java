@@ -33,14 +33,12 @@ public class RobotProgramExecutor<T> implements ProgramExecutor, Callable<Intege
         this.loops    = new RobotLanguageLoopConstructs();
     }
 
-    //public void executeProgram(){
     /**
      * In relazione alla riga corrente del programma currentCommandIndex recupera l'istruzione
      * da eseguire ed i parametri necessari dal comando e ne lancia l'esecuzione. Lancia un comando
      * per ogni unità di tempo.
      */
     public Integer call(){
-   // public void executeProgram(){
         if(currentCommandIndex <= program.size()-1) {
                 ProgramCommand currentCommand = program.get(currentCommandIndex);
                 String instruction = currentCommand.getInstruction().trim().replace(" ", "").toLowerCase();
@@ -129,18 +127,7 @@ public class RobotProgramExecutor<T> implements ProgramExecutor, Callable<Intege
             throw new RuntimeException(e);
         }
     }
-//    private void callMethod(String instruction, Object parameters){
-//        try { Class<?> classe =  RobotLanguageAtomicConstructs.class;
-//            classe.getMethod(instruction, Object.class, ProgrammableObject.class).invoke(this.robot, parameters, this.robot);
-//            this.currentCommandIndex++;
-//        } catch (IllegalAccessException e) {
-//            throw new RuntimeException(e);
-//        } catch (InvocationTargetException e) {
-//            throw new RuntimeException(e);
-//        } catch (NoSuchMethodException e) {
-//            throw new RuntimeException(e);
-//        }
-//    }
+
 
     /**
      * Memorizza le istruzioni avvenute nella memoria del robot.
@@ -154,6 +141,6 @@ public class RobotProgramExecutor<T> implements ProgramExecutor, Callable<Intege
 
     @Override
     public void executeProgram() {
-
+        call();
     }
 }
