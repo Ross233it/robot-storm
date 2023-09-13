@@ -106,7 +106,6 @@ public class RobotProgramExecutor<T> implements ProgramExecutor, Callable<Intege
      */
     private void handleDefaultCommand(String instruction, ProgramCommand command) {
         callMethod(instruction, command.getParameter());
-        takeMemory(this.currentCommandIndex);
     }
 
     /**
@@ -118,6 +117,7 @@ public class RobotProgramExecutor<T> implements ProgramExecutor, Callable<Intege
         try {
             Class<?> classe =  RobotLanguageAtomicConstructs.class;
             classe.getMethod(instruction, parameters.getClass(), ProgrammableObject.class).invoke(this.robot, parameters, this.robot);
+            takeMemory(this.currentCommandIndex);
             this.currentCommandIndex++;
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);

@@ -88,10 +88,27 @@ questa classe è quella di formattare e standardizzare i comandi del linguaggio 
 ed i loro parametri in un oggetto comprensibile all'esecutore.
 
 
-#### CONTROLLER:
+## CONTROLLER:
 Ha la responsabilità di assemblare tutti gli elementi necessari per 
 l'esecuzione della simulazione. Per fare questo interagisce con il Model
 e restituisce informazioni alla view.
 
+
+## WIEW
+### Setup view
+Consente di impostare i paremtri generali della simulazione:
+- numero dei robots;
+- dimensione dell'unita di tempo (1000 = 1 secondo);
+- durata della simulazione in secondi;
+- file contenente il programma;
+- file contenente le forme da inserire nell'ambiente;
+
+### Simulation view
+Consente di visualizzare il comportamento dei robot durante la simulazione:
+- Pulsante Clean: ripristina la simulazione allo stato iniziale;
+- Pulsante StepForward: esegue uno step in avanti della simulazione;
+- Pulsante Play esegue la simulazione come una successione di operazioni scandite da timeUnit;
+- Pulsante ZoomIn ingrandisce la visione sull'ambiente della simulazione
+- Pulsante ZoomOut allontana la visione dall'ambiente di simulaizone;
 
 

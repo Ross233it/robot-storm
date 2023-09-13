@@ -28,6 +28,15 @@
                   </ImageView>
                </graphic>
             </Button>
+            <Button  fx:id="stepBackwardButton" mnemonicParsing="false" onAction="#onStepBackwardCommand">
+               <graphic>
+                  <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/Skip-backward-icon.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
             <Button  fx:id="stepForwardButton" mnemonicParsing="false" onAction="#onStepForwardCommand">
                <graphic>
                   <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
@@ -72,6 +81,11 @@
                      </image>
                   </ImageView>
                </graphic>
+               <HBox>
+                  <children>
+                     <Group fx:id="labels" />
+                  </children>
+               </HBox>
             </Button>
 
          </children>
@@ -80,7 +94,9 @@
          </padding>
       </HBox>
    </top>
-   <bottom></bottom>
+   <bottom>
+
+   </bottom>
    <center>
       <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="329.0" prefWidth="603.0" BorderPane.alignment="CENTER">
          <children>

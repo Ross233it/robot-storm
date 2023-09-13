@@ -5,7 +5,11 @@ package it.unicam.cs.followme.app;
 import it.unicam.cs.followme.model.common.TwoDimensionalPoint;
 import it.unicam.cs.followme.model.environment.StaticCircle;
 import it.unicam.cs.followme.model.environment.StaticRectangle;
+import it.unicam.cs.followme.model.hardware.ProgrammableObject;
+import it.unicam.cs.followme.model.hardware.RobotState;
 import it.unicam.cs.followme.model.timeManagment.SimulationTimer;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.event.Event;
 import javafx.fxml.FXML;
@@ -28,9 +32,11 @@ import javafx.stage.Stage;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.time.Duration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -71,17 +77,10 @@ public class FollowMeAppController{
     @FXML
     private Button stepBackwardButton;
 
-
-
     @FXML
     private Group cartesian;
-    //private CartesianAxisManager axes;
 
-    private int row = 50;
-    private int columns = 50;
-    private int cellSize = 30;
 
-    private int firstRow = 0;
 
     private int firstColumn = 0;
     private CartesianAxisManager axes;
@@ -111,6 +110,11 @@ public class FollowMeAppController{
     @FXML
     public void onStepForwardCommand(Event event){
         simStepExecution();
+    }
+
+    @FXML
+    public void onStepBackwardCommand(Event event){
+        simStepBackExecution();
     }
 
     @FXML
@@ -153,8 +157,11 @@ public class FollowMeAppController{
      */
     @FXML
     private void onClearCommand() {
+        currentTime = 0;
         cartesian.getChildren().clear();
-        rebuildScene();
+        currentRobots.stream().forEach(
+                robot -> robot.setPosition(robot.getMemory().getState(0).position()));
+        rebuildScene(axes.getScale());
     }
 
     /**
@@ -173,6 +180,7 @@ public class FollowMeAppController{
         this.currentRobots = controller.getRobots();
         this.currentShapes = controller.getShapes();
         this.simDuration = simDuration;
+        this.robotNumber = robotNumber;
         robotInitialize(cartesian);
         displayShapes();
     }
@@ -180,45 +188,74 @@ public class FollowMeAppController{
     private void simStepExecution(){
         controller.runNextRobotCommand();
         currentTime++;
-        rebuildScene();
+        rebuildScene(axes.getScale());
+//        if(currentTime>= simDuration) {
+//            currentTime++;
+//        currentRobots.stream()
+//                .filter(robot -> robot.getMemory().getState(currentTime).position() != null)
+//                .forEach(robot -> robot.setPosition(robot.getMemory().getState(currentTime).position()));
+//        rebuildScene(axes.getScale());}
     }
 
-    public void simTimeExecution(){
-        SimulationTimer timer = new SimulationTimer(timeUnit, simDuration);
-        timer.start();
-        while(currentTime < simDuration){
-            timer.updateTime();
-            try {
-                timer.sleep(timeUnit);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            if (currentTime <= timer.getTime()) {
-                System.out.println("TIMER "+ timer.getTime());
-                System.out.println("CURRENT TIME "+ currentTime);
-                if(controller.runNextRobotCommand()){
-                    rebuildScene();
+    private void simStepBackExecution(){
+//        if(currentTime>=0){
+//            currentTime--;
+//        currentRobots.stream()
+//                .filter(robot -> robot.getMemory().getState(currentTime).position() != null)
+//                .forEach(robot -> robot.setPosition(robot.getMemory().getState(currentTime).position()));
+//        rebuildScene(axes.getScale());}
+    }
+
+//    public void simTimeExecution(){
+//        SimulationTimer timer = new SimulationTimer(timeUnit, simDuration);
+//        timer.start();
+//        while(currentTime < simDuration){
+//            timer.updateTime();
+//            try {
+//                timer.sleep(timeUnit);
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
+//            if (currentTime <= timer.getTime()) {
+//                System.out.println("TIMER "+ timer.getTime());
+//                System.out.println("CURRENT TIME "+ currentTime);
+//                if(controller.runNextRobotCommand()){
+//                    rebuildScene(axes.getScale());
+//                    currentTime++;
+//                }
+//            }
+//        }
+//    }
+
+    public void simTimeExecution() {
+        // Crea un Timeline per aggiornare periodicamente la GUI
+
+        javafx.util.Duration duration =  javafx.util.Duration.seconds(1);
+        Timeline timeline = new Timeline(new KeyFrame(duration, event -> {
+            if (currentTime < simDuration) {
+                System.out.println("TIMER " + currentTime);
+                System.out.println("CURRENT TIME " + currentTime);
+                if (controller.runNextRobotCommand()) {
+                    rebuildScene(axes.getScale());
                     currentTime++;
                 }
             }
-        }
+        }));
+        timeline.setCycleCount(simDuration); // Numero di cicli
+
+        // Avvia il Timeline
+        timeline.play();
     }
 
-
-    public void rebuildScene(){
-        this.axes.axisSetup(this.axes.getScale(), cartesian);
+    /**
+     * Aggiorna la visualizzazione degli elementi nell'interfaccia grafica
+     * @param axisScale scala dimensionale dello spazio
+     */
+    public void rebuildScene(Integer axisScale){
+        axes.axisSetup(axisScale, cartesian);
         robotInitialize(this.cartesian);
         displayShapes();
-        System.out.println("QUI è DOPO INIZIALIZE");
-        System.out.println("QUI FINISCE L'ITERAZIONE");
     }
-
-//    private void changeBounds(double lx,double ly,double ux,double uy){
-//        this.axes.getxAxis().setUpperBound(this.axes.getxAxis().getUpperBound()+ux);
-//        this.axes.getyAxis().setUpperBound(this.axes.getyAxis().getUpperBound()+uy);
-//        this.axes.getyAxis().setLowerBound(this.axes.getyAxis().getLowerBound()+ly);
-//        this.axes.getxAxis().setLowerBound(this.axes.getxAxis().getLowerBound()+lx);
-//    }
 
     /**
      * This method is used to scroll down the observed cells.
@@ -251,46 +288,44 @@ public class FollowMeAppController{
 
 
     /**
-     * This method is used to zoom in the observed cells, namely to increase the number of cells depicted in the interface.
+     * Avvicina il punto di vista di osservazione.
+     * @param scale la scala attuale di visualizzazione.
      */
-    private void zoomIn() {
-        this.axes.axisSetup(
-                this.axes.getScale()-10, cartesian);
-                robotInitialize(cartesian);
-                displayShapes();
-    }
+    private void zoomIn() {rebuildScene(axes.getScale()-10);}
 
     /**
-     * This method is used to zoom out the observed cells, namely to increase the cells size.
+     * Allontana il punto di vista di osservazione.
+     * @param scale la scala attuale di visualizzazione.
      */
-    private void zoomOut() {
-        this.axes.axisSetup(this.axes.getScale()+10, cartesian);
-        robotInitialize(cartesian);
-        displayShapes();
-        }
+    private void zoomOut() {rebuildScene(axes.getScale()+10);}
 
     /**
      * Inizializza le forme puntiformi dei robot sull'interfaccia grafica
      * @param cartesian un Group destinatario.
      */
     private void robotInitialize(Group cartesian) {
+        robotSetup();
+        Platform.runLater(() -> {
+            this.symbolMap.keySet().stream().forEach(e->{
+                if(e.getPosition().getX() < axes.getScale() && e.getPosition().getY()<axes.getScale()){
+                    this.cartesian.getChildren().add(symbolMap.get(e));
+                }
+            });
+        });
+    }
+
+    private void robotSetup(){
         this.cartesian.getChildren().removeAll(this.symbolMap.keySet());
         System.out.println("IOSONOROBOTINITIALIZE!!!!!");
-        symbolMap = this.currentRobots.stream()
-                    .filter(e-> e.getPosition().getX()< axes.getScale() && e.getPosition().getY()<axes.getScale())
-                    .collect(Collectors.toMap(
+        symbolMap = this.currentRobots.parallelStream()
+                .filter(e-> e.getPosition().getX()< axes.getScale() && e.getPosition().getY()<axes.getScale())
+                .collect(Collectors.toMap(
                         e -> e,
                         e -> {Label label = new Label( "Id"+e.getId() +" "+ e.getLabel(), new Circle(2,Color.RED));
-                        label.setLayoutX(AXES_ZERO + ((e.getPosition().getX()) * axes.getTickSize()));
-                        label.setLayoutY(AXES_ZERO - ((e.getPosition().getY()) * axes.getTickSize()));
-                        return label;}
-                    ));
-
-        this.symbolMap.keySet().stream().forEach(e->{
-            if(e.getPosition().getX() < axes.getScale() && e.getPosition().getY()<axes.getScale()){
-                this.cartesian.getChildren().add(symbolMap.get(e));
-            }
-        });
+                            label.setLayoutX(AXES_ZERO + ((e.getPosition().getX()) * axes.getTickSize()));
+                            label.setLayoutY(AXES_ZERO - ((e.getPosition().getY()) * axes.getTickSize()));
+                            return label;}
+                ));
     }
 
     private void displayShapes(){
@@ -299,6 +334,8 @@ public class FollowMeAppController{
             if(e instanceof StaticRectangle) this.addRectangle((StaticRectangle<TwoDimensionalPoint>) e, this.cartesian);
         });
     }
+
+
 
     /**
      * Genera una figura circolare nell'interfaccia grafica
