@@ -5,9 +5,6 @@ package it.unicam.cs.followme.app;
 import it.unicam.cs.followme.model.common.TwoDimensionalPoint;
 import it.unicam.cs.followme.model.environment.StaticCircle;
 import it.unicam.cs.followme.model.environment.StaticRectangle;
-import it.unicam.cs.followme.model.hardware.ProgrammableObject;
-import it.unicam.cs.followme.model.hardware.RobotState;
-import it.unicam.cs.followme.model.timeManagment.SimulationTimer;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
@@ -20,8 +17,6 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -32,11 +27,9 @@ import javafx.stage.Stage;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.time.Duration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -80,6 +73,8 @@ public class FollowMeAppController{
     @FXML
     private Group cartesian;
 
+    @FXML
+    private Group timeLabels;
 
 
     private int firstColumn = 0;
@@ -228,22 +223,16 @@ public class FollowMeAppController{
 //    }
 
     public void simTimeExecution() {
-        // Crea un Timeline per aggiornare periodicamente la GUI
-
-        javafx.util.Duration duration =  javafx.util.Duration.seconds(1);
+        javafx.util.Duration duration =  javafx.util.Duration.millis(timeUnit);
         Timeline timeline = new Timeline(new KeyFrame(duration, event -> {
             if (currentTime < simDuration) {
-                System.out.println("TIMER " + currentTime);
-                System.out.println("CURRENT TIME " + currentTime);
                 if (controller.runNextRobotCommand()) {
                     rebuildScene(axes.getScale());
                     currentTime++;
-                }
+                    printTime(currentTime);}
             }
         }));
-        timeline.setCycleCount(simDuration); // Numero di cicli
-
-        // Avvia il Timeline
+        timeline.setCycleCount(simDuration);
         timeline.play();
     }
 
@@ -255,6 +244,12 @@ public class FollowMeAppController{
         axes.axisSetup(axisScale, cartesian);
         robotInitialize(this.cartesian);
         displayShapes();
+    }
+
+    public void printTime(Integer time){
+        timeLabels.getChildren().clear();
+        Label timeLabel = new Label(time.toString());
+        timeLabels.getChildren().add(timeLabel);
     }
 
     /**
@@ -369,6 +364,13 @@ public class FollowMeAppController{
     }
 //TODO VEDERE SE SERVE
     public double tickSize(){ return axes.getTickSize();}
+
+
+//    public double getNewPosition(Positionable positionable){
+//        ((positionable.getPosition().getX() * axes.getTickSize()) - (positionable.getWidth() * axes.getTickSize()/2));
+//
+//
+//    }
 }
 
 

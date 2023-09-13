@@ -81,12 +81,12 @@
                      </image>
                   </ImageView>
                </graphic>
-               <HBox>
-                  <children>
-                     <Group fx:id="labels" />
-                  </children>
-               </HBox>
             </Button>
+            <HBox>
+               <children>
+                  <Group fx:id="timeLabels" />
+               </children>
+            </HBox>
 
          </children>
          <padding>

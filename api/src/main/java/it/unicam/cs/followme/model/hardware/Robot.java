@@ -9,8 +9,7 @@ import it.unicam.cs.followme.model.software.RobotProgramExecutor;
  * Questa classe rappresenta un oggetto programmabile di tipo robot in grado
  * di modificare la propria posizione e la propria condizione.
  */
-
-public class Robot implements ProgrammableObject<ProgramLoader, TwoDimensionalPoint, SpeedVector>{
+public class Robot implements ProgrammableObject<TwoDimensionalPoint, SpeedVector>{
     Integer robotId;
     TwoDimensionalPoint position;
     String label;
@@ -91,11 +90,9 @@ public class Robot implements ProgrammableObject<ProgramLoader, TwoDimensionalPo
      */
     public RobotMemory getMemory() {return memory;}
 
-    public RobotProgramExecutor getRobotExcutor() {
-        return robotExcutor;
-    }
-
-    public void setRobotExcutor(RobotProgramExecutor robotExcutor) {
-        this.robotExcutor = robotExcutor;
-    }
+    /**
+     * Ritorna l'interprete dei comandi del robot
+     * @return memory la memoria del robot {@link RobotMemory}
+     */
+    public RobotProgramExecutor getRobotExcutor() {return robotExcutor;}
 }
