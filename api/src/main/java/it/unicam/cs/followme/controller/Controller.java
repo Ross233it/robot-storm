@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.concurrent.*;
 import java.util.stream.Collectors;
 
 public class Controller<S extends Shape, P extends ProgrammableObject> {
@@ -23,8 +24,8 @@ public class Controller<S extends Shape, P extends ProgrammableObject> {
     private ProgramLoader program;
     private final FollowMeParser parser ;
     private BidimensionalSpace environment;
-    //private List<Callable<Integer>> executors;
-    private List<RobotProgramExecutor> executors;
+    private List<Callable<Integer>> executors;
+    //private List<RobotProgramExecutor> executors;
 
     /**
      * Genera un controller
@@ -98,12 +99,23 @@ public class Controller<S extends Shape, P extends ProgrammableObject> {
      * Identifica  e raccoglie i ProgramExecutors di tutti i robot presenti nell'ambiente
      * @return robotExecutors lista di {@Link RobotProgramExecutor}
      */
-    public List<RobotProgramExecutor> launchRobots() {
+//    public List<RobotProgramExecutor> launchRobots() {
+//        List<Robot> allRobots = this.environment.getProgrammableInSpace();
+//
+//        List<RobotProgramExecutor> robotExecutors = allRobots.stream()
+//                .map(robot -> robot.getRobotExcutor())
+//                .collect(Collectors.toList());
+//        return robotExecutors;
+//    }
+
+    public List<Callable<Integer>> launchRobots() {
         List<Robot> allRobots = this.environment.getProgrammableInSpace();
 
-        List<RobotProgramExecutor> robotExecutors = allRobots.stream()
+        List<Callable<Integer>> robotExecutors = allRobots.stream()
                 .map(robot -> robot.getRobotExcutor())
-                .collect(Collectors.toList());
+                .map(executor -> (Callable<Integer>) executor)
+                .collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
+        //.collect(Collectors.<Callable<Integer>>toList());
         return robotExecutors;
     }
 
@@ -111,32 +123,28 @@ public class Controller<S extends Shape, P extends ProgrammableObject> {
      * Avvia il {@link RobotProgramExecutor} per ciascun robot
      * @return
      */
-    public boolean runNextRobotCommand() {
-        System.out.println("ESCUZIONE DI RUN ROBOT COMMAND");
-        executors.stream().forEach(executor -> {
-                executor.executeProgram();
-    });
+//    public boolean runNextRobotCommand() {
+//        System.out.println("ESCUZIONE DI RUN ROBOT COMMAND");
+//        executors.stream().forEach(executor -> {
+//                executor.executeProgram();
+//    });
 
 //TODO VERIFICARE SE SI PUO' FARE IN PARALLELO
-
-//        ExecutorService executor = Executors.newCachedThreadPool();
-//            try {
-//                List<Future<Integer>> futures =  executor.invokeAll(executors);
-//                for (Future<Integer> future : futures) {
-//                    future.get();}
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            } catch (ExecutionException e) {
-//                throw new RuntimeException(e);
-//            } finally {
-//                executor.shutdown();
-//                return true;
-//            }
-        return true;
+public boolean runNextRobotCommand() {
+        ExecutorService executor = Executors.newCachedThreadPool();
+            try {
+                List<Future<Integer>> futures =  executor.invokeAll(executors);
+                for (Future<Integer> future : futures) {
+                    future.get();}
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                throw new RuntimeException(e);
+            } finally {
+                executor.shutdown();
+                return true;
+            }
     }
-
-
-
 
     /**
      * Genera le forme geometriche statiche per l'inserimento nell'environment
@@ -160,4 +168,6 @@ public class Controller<S extends Shape, P extends ProgrammableObject> {
      * @return robots una lista dei robot presenti nell'ambiente
      */
     public List<Shape>getShapes(){ return this.environment.getShapesInSpace();}
+
+    
 }

@@ -24,14 +24,14 @@ import java.util.stream.Stream;
          * @param param array contentente x e y di direzione e velocità di spostamento
          * @param programmable il robot destinatario del comando.
          */
-        public static void move(Object param, ProgrammableObject programmable){
+        public static void move(double[] args, ProgrammableObject programmable){
             //TODO REMOVE PRINT
             TwoDimensionalPoint prima = (TwoDimensionalPoint) programmable.getPosition();
             System.out.println(prima.getX() + " "+ prima.getY());
 
-            double[] args = Utilities.fromObjectToDoubleArray(param);
+            //double[] args = Utilities.fromObjectToDoubleArray(param);
             SpeedVector speedVector;
-            if(param == null){speedVector = (SpeedVector) programmable.getDirection();}
+            if(args.length == 0){speedVector = (SpeedVector) programmable.getDirection();}
             else{speedVector = new SpeedVector(args[0], args[1], args[2]);}
             double vector = Utilities.getDiagonal(speedVector.getX(), speedVector.getY());
             double newX = Utilities.getSideFromDiagonal(speedVector.getSpeed(), vector,  speedVector.getX());
@@ -50,8 +50,7 @@ import java.util.stream.Stream;
          * @param programmable l'oggetto destinatario dello spostamento.
          * @param <P> sono ammessi oggetti che implementano l'interfaccia ProgrammableObject
          */
-        public static  void moverandom(Object param, ProgrammableObject programmable){
-            double[] args = Utilities.fromObjectToDoubleArray(param);
+        public static  void moverandom(double[] args, ProgrammableObject programmable){
             double[] xRange = Utilities.sortTwoDouble(args[0], args[1]);
             double[] yRange = Utilities.sortTwoDouble(args[2], args[3]);
             args[0] = Utilities.randomScaledNumber(xRange[0],  xRange[1]);
@@ -66,7 +65,7 @@ import java.util.stream.Stream;
          * la segnala ritornando la stringa della nuova label.
          * @param programmable il programmabile destinatario del comando
          */
-        public static  String signal(Object label, ProgrammableObject programmable){
+        public static  String signal(String label, ProgrammableObject programmable){
             String activeLabel = Utilities.fromObjectToString(label);
             programmable.setLabel(activeLabel);
             return activeLabel;
@@ -79,16 +78,15 @@ import java.util.stream.Stream;
          * @param environment istanza dell'ambiente
          * @param robot il robot destinatario del comando.
          */
-        public static void follow(Object[] parameters, BidimensionalSpace environment, Robot robot) {
+        public static <T> void follow( T[] parameters, BidimensionalSpace environment, Robot robot) {
             String labelToCheck = (String) parameters[0];
             double[] args = (double[]) parameters[1];
             double distanceToCheck = args[0];
-            double speed = args[2];
             Stream<Robot>neighbours = environment.getNeighbours(robot.getPosition(), labelToCheck, distanceToCheck);
             Double newX = averageX(neighbours) != 0 ? averageX(neighbours) : Utilities.randomScaledNumber(-distanceToCheck, distanceToCheck);
             Double newY = averageY(neighbours) != 0 ? averageY(neighbours) : Utilities.randomScaledNumber(-distanceToCheck, distanceToCheck);
-            SpeedVector followVector= new SpeedVector(newX,  newY, speed);
-            move(followVector, robot);
+            double[] param = {newX,  newY, args[2]};
+            move(param, robot);
         }
 
         /**
@@ -97,7 +95,7 @@ import java.util.stream.Stream;
          * la sua label
          * @param programmable il programmabile destinatario del comando
          */
-        public static String unsignal(Object label, ProgrammableObject programmable){
+        public static String unsignal(String label, ProgrammableObject programmable){
             String labelToCheck = Utilities.fromObjectToString(label);
             if(programmable.getLabel().equals(labelToCheck))
                 programmable.setLabel("");

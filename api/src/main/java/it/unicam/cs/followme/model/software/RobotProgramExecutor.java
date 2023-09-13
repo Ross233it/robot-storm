@@ -8,12 +8,13 @@ import it.unicam.cs.followme.model.hardware.RobotState;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.concurrent.Callable;
 
 /**
  * Il RobotProgramExecutor ha la responsabilità di
  * recepire un comando e lanciare la conseguente azione del robot.
  */
-public class RobotProgramExecutor<T> implements ProgramExecutor/* ,Callable<Integer>*/{
+public class RobotProgramExecutor<T> implements ProgramExecutor, Callable<Integer> {
     private final Robot robot;
     private final RobotLanguageLoopConstructs loops;
     private final ArrayList<ProgramCommand> program;
@@ -32,13 +33,14 @@ public class RobotProgramExecutor<T> implements ProgramExecutor/* ,Callable<Inte
         this.loops    = new RobotLanguageLoopConstructs();
     }
 
+    //public void executeProgram(){
     /**
      * In relazione alla riga corrente del programma currentCommandIndex recupera l'istruzione
      * da eseguire ed i parametri necessari dal comando e ne lancia l'esecuzione. Lancia un comando
      * per ogni unità di tempo.
      */
-    //public Integer call(){
-    public void executeProgram(){
+    public Integer call(){
+   // public void executeProgram(){
         if(currentCommandIndex <= program.size()-1) {
                 ProgramCommand currentCommand = program.get(currentCommandIndex);
                 String instruction = currentCommand.getInstruction().trim().replace(" ", "").toLowerCase();
@@ -56,7 +58,7 @@ public class RobotProgramExecutor<T> implements ProgramExecutor/* ,Callable<Inte
                     default         -> handleDefaultCommand(instruction, currentCommand);
                 }
             }
-       // return 1;
+        return 1;
       }
 
 
@@ -97,7 +99,7 @@ public class RobotProgramExecutor<T> implements ProgramExecutor/* ,Callable<Inte
      * @param command il comando da eseguire {@link ProgramCommand}
      */
     private void handleFollowCommand(ProgramCommand command) {
-        RobotLanguageAtomicConstructs.follow(command.getMultipleParameters(), environment, this.robot);
+         RobotLanguageAtomicConstructs.follow(command.getMultipleParameters(), environment, this.robot);
     }
 
     /**
@@ -106,7 +108,7 @@ public class RobotProgramExecutor<T> implements ProgramExecutor/* ,Callable<Inte
      */
     private void handleDefaultCommand(String instruction, ProgramCommand command) {
         callMethod(instruction, command.getParameter());
-        takeMemory(this.currentTime);
+        takeMemory(this.currentCommandIndex);
     }
 
     /**
@@ -114,9 +116,10 @@ public class RobotProgramExecutor<T> implements ProgramExecutor/* ,Callable<Inte
      * @param instruction istruzione da eseguire;
      * @param parameters  parametri per l'esecuzione.
      */
-    private void callMethod(String instruction, Object parameters){
-        try { Class<?> classe =  RobotLanguageAtomicConstructs.class;
-            classe.getMethod(instruction, Object.class, ProgrammableObject.class).invoke(this.robot, parameters, this.robot);
+    private <T> void callMethod(String instruction, T parameters){
+        try {
+            Class<?> classe =  RobotLanguageAtomicConstructs.class;
+            classe.getMethod(instruction, parameters.getClass(), ProgrammableObject.class).invoke(this.robot, parameters, this.robot);
             this.currentCommandIndex++;
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
@@ -126,6 +129,18 @@ public class RobotProgramExecutor<T> implements ProgramExecutor/* ,Callable<Inte
             throw new RuntimeException(e);
         }
     }
+//    private void callMethod(String instruction, Object parameters){
+//        try { Class<?> classe =  RobotLanguageAtomicConstructs.class;
+//            classe.getMethod(instruction, Object.class, ProgrammableObject.class).invoke(this.robot, parameters, this.robot);
+//            this.currentCommandIndex++;
+//        } catch (IllegalAccessException e) {
+//            throw new RuntimeException(e);
+//        } catch (InvocationTargetException e) {
+//            throw new RuntimeException(e);
+//        } catch (NoSuchMethodException e) {
+//            throw new RuntimeException(e);
+//        }
+//    }
 
     /**
      * Memorizza le istruzioni avvenute nella memoria del robot.
@@ -137,4 +152,8 @@ public class RobotProgramExecutor<T> implements ProgramExecutor/* ,Callable<Inte
                                                                  this.robot.getLabel()));
     }
 
+    @Override
+    public void executeProgram() {
+
+    }
 }
