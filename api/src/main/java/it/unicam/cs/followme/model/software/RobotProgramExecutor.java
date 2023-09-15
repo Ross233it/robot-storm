@@ -1,13 +1,16 @@
 package it.unicam.cs.followme.model.software;
 
 import it.unicam.cs.followme.io.ProgramLoader;
+import it.unicam.cs.followme.model.common.TwoDimensionalPoint;
 import it.unicam.cs.followme.model.environment.BidimensionalSpace;
+import it.unicam.cs.followme.model.environment.Shape;
 import it.unicam.cs.followme.model.hardware.ProgrammableObject;
 import it.unicam.cs.followme.model.hardware.Robot;
 import it.unicam.cs.followme.model.hardware.RobotState;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.Callable;
 
 /**
@@ -40,9 +43,11 @@ public class RobotProgramExecutor<T> implements ProgramExecutor, Callable<Intege
      */
     public Integer call(){
         if(currentCommandIndex <= program.size()-1) {
+
                 ProgramCommand currentCommand = program.get(currentCommandIndex);
                 String instruction = currentCommand.getInstruction().trim().replace(" ", "").toLowerCase();
 
+                RobotLanguageAtomicConstructs.checkShape(robot, environment);
                 //todo remove print
                 printThings(currentCommand);
 
@@ -63,7 +68,7 @@ public class RobotProgramExecutor<T> implements ProgramExecutor, Callable<Intege
      * Avvia il comando repeat
      * @param command il comando da eseguire {@link ProgramCommand}
      */
-    private void handleRepeatCommand(ProgramCommand command) {
+    private void handleRepeatCommand(ProgramCommand<Integer> command) {
         currentCommandIndex = loops.repeat(command.getParameter(), currentCommandIndex);
     }
 
@@ -142,6 +147,7 @@ public class RobotProgramExecutor<T> implements ProgramExecutor, Callable<Intege
     public void executeProgram() {
         call();
     }
+
 
     //todo remove methodd
     private void printThings(ProgramCommand currentCommand){

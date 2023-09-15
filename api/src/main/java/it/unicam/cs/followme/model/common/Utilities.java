@@ -8,42 +8,7 @@ import java.util.Random;
  * operazioni ricorrenti all'interno dell'applicazione
  */
 public class Utilities {
-    /**
-     * Utility method per effettuare il cast esplicito di un oggetto ad array di double
-     * @param obj l'oggetto di classe Object da convertire
-     * @return Double[] obj l'oggetto convertito.
-     * @throws IllegalArgumentException
-     */
-    public static double[] fromObjectToDoubleArray(Object obj){
-        if(obj instanceof double[])
-            return  (double[]) obj;
-        else
-            throw new IllegalArgumentException("L'oggetto non è un array di double");
-    }
 
-    /**
-     * Utility method per effettuare il cast esplicito di un oggetto ad Integer
-     * @param obj l'oggetto di classe Object da convertire
-     * @return Integer obj l'oggetto convertito.
-     * @throws  IllegalArgumentException
-     */
-    public static Integer fromObjectToInteger(Object obj){
-        if(obj instanceof Integer)
-            return  (Integer) obj;
-        throw new IllegalArgumentException("L'oggetto non è di tipo Integer");
-    }
-
-    /**
-     * Utility method per effettuare il cast esplicito di un oggetto in Stringa
-     * @param obj l'oggetto di classe Object da convertire
-     * @return String obj l'oggetto convertito in stringa.
-     * @throws IllegalArgumentException
-     */
-    public static String fromObjectToString(Object obj){
-        if(obj instanceof String)
-            return  (String) obj;
-        throw new IllegalArgumentException("L'oggetto non è di tipo String");
-    }
 
     /**
      * Dato un punto del piano cartesiano verifica se è interno o esterno ad un cerchio di

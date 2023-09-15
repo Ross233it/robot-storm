@@ -21,13 +21,10 @@ public class RobotLanguageLoopConstructs {
     private Integer untilCommandIndex;
     /**
      * Il comando repeat rileva il numero di ripetizioni cui è soggetto un blocco di istruzioni
-     * @param param integer
+     * @param repetitionCount integer
      */
-    public Integer repeat(Object param, Integer currentCommandIndex){
-        //todo remove print
-        System.out.println("INIZIO REPEAT");
-        this.repetitionCount = Utilities.fromObjectToInteger(param)-1;
-            if(repetitionCount<0) repetitionCount  = 0;
+    public Integer repeat(int repetitionCount, Integer currentCommandIndex){
+        this.repetitionCount =  repetitionCount<0 ? 0 : repetitionCount;
         this.toRepeatCommandIndex  = currentCommandIndex + 1;
         return toRepeatCommandIndex;
     }
@@ -78,10 +75,9 @@ public class RobotLanguageLoopConstructs {
     }
 
 //TODO VERIFICARE LA POSIZIONE MIGLIORE PER QUESTO METODO
-    private static boolean checkShape(Object label,
+    private static boolean checkShape(String labelToCheck,
                                List<Shape>shapes,
                                TwoDimensionalPoint positionToCheck){
-        String labelToCheck = Utilities.fromObjectToString(label);
         return   shapes.stream()
                 .filter(s->s.getLabel().equals(labelToCheck))
                 .filter(s->s.isInternal(positionToCheck))

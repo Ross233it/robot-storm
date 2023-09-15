@@ -98,6 +98,22 @@ public class Controller<S extends Shape, P extends ProgrammableObject> {
      * multithread
      * @return true se la computazione è terminata correttamente.
      */
+//    public boolean runNextRobotCommand() {
+//        ExecutorService executor = Executors.newCachedThreadPool();
+//            try {
+//                List<Future<Integer>> futures =  executor.invokeAll(executors);
+//                for (Future<Integer> future : futures) {
+//                    future.get();}
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            } catch (ExecutionException e) {
+//                throw new RuntimeException(e);
+//            } finally {
+//                executor.shutdown();
+//                return true;
+//            }
+//    }
+
     public boolean runNextRobotCommand() {
         ExecutorService executor = Executors.newCachedThreadPool();
             try {

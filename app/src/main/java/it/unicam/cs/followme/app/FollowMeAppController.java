@@ -5,6 +5,7 @@ package it.unicam.cs.followme.app;
 import it.unicam.cs.followme.model.common.TwoDimensionalPoint;
 import it.unicam.cs.followme.model.environment.StaticCircle;
 import it.unicam.cs.followme.model.environment.StaticRectangle;
+import it.unicam.cs.followme.model.hardware.ProgrammableObject;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
@@ -32,7 +33,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
-
+import javafx.scene.layout.StackPane;
 
 import it.unicam.cs.followme.controller.Controller;
 import it.unicam.cs.followme.model.environment.Shape;
@@ -89,11 +90,6 @@ public class FollowMeAppController{
     private int currentTime;
     private int simDuration;
     Map<Robot, Label> symbolMap = new HashMap<>();
-
-//    ConvertPointScale add =((axesZero, programmable, axes1) ->{
-//                TwoDimensionalPoint valueToConvert = (TwoDimensionalPoint) programmable.getPosition();
-//                double value = axesZero + ( valueToConvert.getX()) * axes1.getTickSize());
-//                return value; });
 
     @FXML
     public void initialize() {
@@ -181,9 +177,10 @@ public class FollowMeAppController{
     }
 
     private void simStepExecution(){
-        controller.runNextRobotCommand();
-        currentTime++;
-        rebuildScene(axes.getScale());
+        if(currentTime < simDuration){
+            controller.runNextRobotCommand();
+            rebuildScene(axes.getScale());
+        }
 
     }
 
@@ -223,7 +220,7 @@ public class FollowMeAppController{
             if (currentTime < simDuration) {
                 if (controller.runNextRobotCommand()) {
                     rebuildScene(axes.getScale());
-                    currentTime++;}
+                   }
             }
         }));
         timeline.setCycleCount(simDuration);
@@ -238,12 +235,14 @@ public class FollowMeAppController{
         axes.axisSetup(axisScale, cartesian);
         robotInitialize(this.cartesian);
         displayShapes();
+        currentTime++;
         printTime(currentTime);
     }
 
     public void printTime(Integer time){
         timeLabels.getChildren().clear();
-        Label timeLabel = new Label(time.toString());
+        String toStamp = time < simDuration ? time.toString() : "Simulazione Terminata";
+        Label timeLabel = new Label(toStamp);
         timeLabels.getChildren().add(timeLabel);
     }
 
@@ -279,13 +278,13 @@ public class FollowMeAppController{
 
     /**
      * Avvicina il punto di vista di osservazione.
-     * @param scale la scala attuale di visualizzazione.
+     * @param scala la scala attuale di visualizzazione.
      */
     private void zoomIn() {rebuildScene(axes.getScale()-10);}
 
     /**
      * Allontana il punto di vista di osservazione.
-     * @param scale la scala attuale di visualizzazione.
+     * @param scala la scala attuale di visualizzazione.
      */
     private void zoomOut() {rebuildScene(axes.getScale()+10);}
 
@@ -331,12 +330,13 @@ public class FollowMeAppController{
      * @param cartesian un gruppo target.
      */
     public void addCircle(StaticCircle staticCircle, Group cartesian){
-       Circle sceneCircle = new Circle(
-               AXES_ZERO + (staticCircle.getPosition().getX() * axes.getTickSize()),
-               AXES_ZERO - (staticCircle.getPosition().getY() * axes.getTickSize()),
-                staticCircle.getRadius() * axes.getTickSize(), Color.GREEN);
-       sceneCircle.setOpacity(0.5);
-       cartesian.getChildren().add(sceneCircle);
+        Double x =   getSceneX(staticCircle, axes);
+        Double y =   getSceneY(staticCircle, axes);
+        Circle sceneCircle = new Circle(x, y,
+                scaleToScene(staticCircle.getRadius(), axes),
+                Color.GREEN);
+        sceneCircle.setOpacity(0.5);
+        cartesian.getChildren().add(sceneCircle);
     }
 
     /**
@@ -346,15 +346,63 @@ public class FollowMeAppController{
      */
     public void addRectangle(StaticRectangle<TwoDimensionalPoint> staticRectangle, Group cartesian){
          Rectangle sceneRectangle = new Rectangle(
-                AXES_ZERO  + ((staticRectangle.getPosition().getX() * axes.getTickSize()) - (staticRectangle.getWidth() * axes.getTickSize()/2)),
-                AXES_ZERO - ((staticRectangle.getPosition().getY() * axes.getTickSize()) +  (staticRectangle.getHeight() * axes.getTickSize()/2)),
-                staticRectangle.getWidth() * axes.getTickSize(),
-                staticRectangle.getHeight() * axes.getTickSize()
+                (getSceneX(staticRectangle, axes) - (scaleToScene(staticRectangle.getWidth(), axes)/2)),
+                (getSceneY(staticRectangle, axes) + (scaleToScene(staticRectangle.getHeight(),axes)/2)),
+                scaleToScene(staticRectangle.getWidth(), axes),
+                scaleToScene(staticRectangle.getHeight(), axes)
         );
         sceneRectangle.setOpacity(0.5);
         sceneRectangle.setFill(Color.BLUE);
         cartesian.getChildren().add(sceneRectangle);
     }
+
+    /**
+     * Converte una generica X nella scala dell'interfaccia grafica
+     * @param shape
+     * @param axes
+     * @return
+     */
+    private static Double getSceneX(Shape<TwoDimensionalPoint> shape, CartesianAxisManager axes){
+        return AXES_ZERO + (shape.getPosition().getX() * axes.getTickSize());
+    }
+
+    /**
+     * Converte una generica y nella scala dell'interfaccia grafica
+     * @param shape
+     * @param axes
+     * @return
+     */
+    private static Double getSceneY(Shape<TwoDimensionalPoint> shape, CartesianAxisManager axes){
+        return AXES_ZERO - (shape.getPosition().getY() * axes.getTickSize());
+    }
+
+    /**
+     * Presa una misura come parametro la restituisce nella scala del piano cartesiano
+     * corrente.
+     * @param misure
+     * @param axes
+     * @return
+     */
+    private static Double scaleToScene(Double misure, CartesianAxisManager axes){
+        return misure * axes.getTickSize();
+    }
+
+    public void addLabelToShape(javafx.scene.shape.Shape shape, String shapeLabel) {
+        Label label = new Label(shapeLabel);
+        StackPane stackPane = new StackPane();
+        stackPane.getChildren().addAll(shape, label);
+
+        // Imposta la posizione della Label nel StackPane (puoi personalizzare la posizione a tuo piacimento)
+      //  StackPane.setTranslateX(); // Esempio: sposta la Label 20 pixel a destra
+       // StackPane.setTranslateY(label, -20); // Esempio: sposta la Label 20 pixel verso l'alto
+
+        // Aggiungi il StackPane (con il Circle e la Label) al contenitore desiderato nella tua GUI
+        // Ad esempio, se hai un Pane chiamato "root" nella tua GUI, puoi aggiungerlo così:
+
+        cartesian.getChildren().add(stackPane);
+    }
+
+
 }
 
 
