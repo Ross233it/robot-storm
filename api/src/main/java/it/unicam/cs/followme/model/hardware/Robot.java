@@ -17,6 +17,7 @@ public class Robot implements ProgrammableObject<SpeedVector, TwoDimensionalPoin
     RobotMemory memory;
     RobotProgramExecutor robotExcutor;
 
+
     /**
      * Crea un robot in posizione specificata come parametro e un identificativo univoco.
      * @param position la posizione del robot

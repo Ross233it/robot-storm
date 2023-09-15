@@ -46,7 +46,7 @@ class StaticRectangleTest {
     @Test
     void getHeight() {
         assertTrue(rectangle.getHeight() > 0);
-        assertEquals(16.0, rectangle.getWidth());
+        assertEquals(16.0, rectangle.getHeight());
     }
 
     @Test

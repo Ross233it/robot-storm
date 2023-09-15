@@ -23,7 +23,7 @@ public class StaticRectangle<C extends Coordinates> implements Shape<TwoDimensio
      * @throws IllegalArgumentException if width or height are negative.
      */
     public StaticRectangle(TwoDimensionalPoint position, String label, Double width, Double height) {
-        if(width.doubleValue()<0 || height.doubleValue()<0)
+        if(width.doubleValue()<=0 || height.doubleValue()<=0)
             throw new IllegalArgumentException("Negative StaticRectangle dimensions");
         this.position = position;
         this.width = width;

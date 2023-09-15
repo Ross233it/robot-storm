@@ -31,7 +31,7 @@ class StaticCircleTest {
 
     @Test
     void getLabel() {
-        assertEquals("testCircleLabel",circleToTest.getLabel());
+        assertEquals("_testCircleLabel",circleToTest.getLabel());
     }
 
     @Test

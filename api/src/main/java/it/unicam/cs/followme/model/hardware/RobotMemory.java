@@ -24,6 +24,17 @@ public class RobotMemory implements Memory<Integer, RobotState> {
         stateMap.put(index, state);
     }
 
+
+    /**
+     * Memorizza le istruzioni avvenute nella memoria del robot.
+     * @param time
+     */
+    public void saveInMemory(int time, Robot robot){
+        robot.getMemory().saveInMemory(
+               time, new RobotState(robot.getId(), robot.getPosition(),
+               robot.getDirection(),
+               robot.getLabel()));
+    }
     /**
      * Ritorna l'intero contenuto della memoria
      * @return stateMap la mappa degli stati dei robots

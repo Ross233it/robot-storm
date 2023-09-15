@@ -1,5 +1,6 @@
 package it.unicam.cs.followme.model.hardware;
 
+import it.unicam.cs.followme.io.ProgramLoader;
 import it.unicam.cs.followme.model.common.SpeedVector;
 import it.unicam.cs.followme.model.common.TwoDimensionalPoint;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,11 +14,12 @@ class RobotTest {
     private Robot positionedRobot;
 
     @BeforeEach
-//    void setup(){
-//        this.rangeRobot =  new Robot(20.0, 1);
-//        TwoDimensionalPoint newPosition= new TwoDimensionalPoint(20.0, 50.0);
-//        this.positionedRobot =  new Robot(newPosition, 2);
-//    }
+    void setup(){
+        ProgramLoader program = new ProgramLoader();
+        TwoDimensionalPoint newPosition= new TwoDimensionalPoint(20.0, 50.0);
+        this.positionedRobot =  new Robot(newPosition, 2, program);
+        this.rangeRobot = new Robot(20.0, 1, program);
+    }
 
     @Test
     @DisplayName("Verifica corretto posizionamento robot nel range")
@@ -51,6 +53,8 @@ class RobotTest {
 
     @Test
     void getLabel() {
+        assertEquals("", positionedRobot.getLabel());
+        positionedRobot.setLabel("Init");
         assertEquals("Init", positionedRobot.getLabel());
     }
 
@@ -65,5 +69,22 @@ class RobotTest {
     void getId() {
         assertEquals(2, positionedRobot.getId());
         assertEquals(1, rangeRobot.getId());
+    }
+
+    @Test
+    void getMemory(){
+        positionedRobot.setLabel("nuova label");
+        RobotState state = new RobotState(
+                positionedRobot.getId(),
+                positionedRobot.getPosition(),
+                positionedRobot.getDirection(),
+                positionedRobot.getLabel());
+        positionedRobot.getMemory().saveInMemory(0, state);
+        assertEquals("nuova label", positionedRobot.getMemory().getState(0).label());
+        assertEquals(2, positionedRobot.getId());
+        TwoDimensionalPoint newPosition = new TwoDimensionalPoint(5.0,-3.0);
+        positionedRobot.setPosition(newPosition);
+        assertEquals(newPosition, positionedRobot.getPosition());
+
     }
 }

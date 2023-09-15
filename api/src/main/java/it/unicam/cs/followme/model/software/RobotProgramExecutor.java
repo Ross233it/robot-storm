@@ -1,16 +1,12 @@
 package it.unicam.cs.followme.model.software;
 
 import it.unicam.cs.followme.io.ProgramLoader;
-import it.unicam.cs.followme.model.common.TwoDimensionalPoint;
 import it.unicam.cs.followme.model.environment.BidimensionalSpace;
-import it.unicam.cs.followme.model.environment.Shape;
 import it.unicam.cs.followme.model.hardware.ProgrammableObject;
 import it.unicam.cs.followme.model.hardware.Robot;
-import it.unicam.cs.followme.model.hardware.RobotState;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.Callable;
 
 /**
@@ -53,6 +49,7 @@ public class RobotProgramExecutor<T> implements ProgramExecutor, Callable<Robot>
                     case "follow"   -> handleFollowCommand(currentCommand);
                     default         -> handleDefaultCommand(instruction, currentCommand);
                 }
+                robot.getMemory().saveInMemory(currentCommandIndex, robot);
             }
         return robot;
       }
@@ -115,7 +112,6 @@ public class RobotProgramExecutor<T> implements ProgramExecutor, Callable<Robot>
         try {
             Class<?> classe =  RobotLanguageAtomicConstructs.class;
             classe.getMethod(instruction, parameters.getClass(), ProgrammableObject.class).invoke(this.robot, parameters, this.robot);
-            takeMemory(this.currentCommandIndex);
             this.currentCommandIndex++;
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
@@ -125,18 +121,6 @@ public class RobotProgramExecutor<T> implements ProgramExecutor, Callable<Robot>
             throw new RuntimeException(e);
         }
     }
-
-
-    /**
-     * Memorizza le istruzioni avvenute nella memoria del robot.
-     * @param time
-     */
-    private void takeMemory(int time){
-        this.robot.getMemory().saveInMemory(time, new RobotState(this.robot.getId(), this.robot.getPosition(),
-                                                                 this.robot.getDirection(),
-                                                                 this.robot.getLabel()));
-    }
-
 
     @Override
     public void executeProgram() {
