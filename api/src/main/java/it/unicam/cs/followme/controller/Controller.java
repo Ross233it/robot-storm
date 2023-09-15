@@ -3,19 +3,22 @@ package it.unicam.cs.followme.controller;
 import it.unicam.cs.followme.io.ShapeBuilder;
 import it.unicam.cs.followme.io.ShapeLoader;
 import it.unicam.cs.followme.io.ShapesCreator;
+import it.unicam.cs.followme.model.common.TwoDimensionalPoint;
 import it.unicam.cs.followme.model.environment.BidimensionalSpace;
+import it.unicam.cs.followme.model.environment.Environment;
 import it.unicam.cs.followme.model.environment.Shape;
 import it.unicam.cs.followme.io.ProgramLoader;
-import it.unicam.cs.followme.model.software.RobotProgramExecutor;
 import it.unicam.cs.followme.model.hardware.ProgrammableObject;
 import it.unicam.cs.followme.model.hardware.Robot;
+import it.unicam.cs.followme.model.software.RobotLanguageAtomicConstructs;
+import it.unicam.cs.followme.model.software.RobotProgramExecutor;
 import it.unicam.cs.followme.utilities.FollowMeParser;
 import it.unicam.cs.followme.utilities.FollowMeParserException;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.*;
 
 public class Controller<S extends Shape, P extends ProgrammableObject> {
@@ -23,7 +26,7 @@ public class Controller<S extends Shape, P extends ProgrammableObject> {
     private ProgramLoader program;
     private final FollowMeParser parser ;
     private BidimensionalSpace environment;
-    private List<Callable<Integer>> executors;
+    private List<Callable<Robot>> executors;
 
     /**
      * Metodo costruttore Controller
@@ -38,12 +41,13 @@ public class Controller<S extends Shape, P extends ProgrammableObject> {
      * @param robotNumber il numero dei robot da generare entro un raggio +/- range
      */
     public void simulationSetup(Integer robotNumber,  Double range, Path programPath, Path environmentPath){
-        List<Robot> currentRobots = generateRobotsRandomly(robotNumber,  program, range);
+        List<Robot> currentRobots = RobotExecutorController.generateRobotsRandomly(robotNumber,  program, range);
         List<Shape> loadedShapes = shapesSetup(environmentPath);
         this.program         = generateRobotProgram(programPath);
         this.environment = new BidimensionalSpace(currentRobots, loadedShapes);
-        this.executors       = launchRobots();
+        this.executors       = RobotExecutorController.launchRobots(environment);
     }
+
 
     /**
      * Crea una serie di robot in posizione randomica compresa in un determinato range
@@ -68,7 +72,7 @@ public class Controller<S extends Shape, P extends ProgrammableObject> {
      * @param programPath il percorso del file di programma
      * @return program programma eseguibile dai robot
      */
-    private ProgramLoader generateRobotProgram(Path programPath) {
+    public ProgramLoader generateRobotProgram(Path programPath) {
         try {
             this.parser.parseRobotProgram(programPath);
         } catch (IOException e) {
@@ -83,12 +87,11 @@ public class Controller<S extends Shape, P extends ProgrammableObject> {
      * Identifica  e raccoglie i ProgramExecutors di tutti i robot presenti nell'ambiente
      * @return robotExecutors lista di {@Link RobotProgramExecutor}
      */
-    private List<Callable<Integer>> launchRobots() {
+    private List<Callable<Robot>> launchRobots() {
         List<Robot> allRobots = this.environment.getProgrammableInSpace();
-
-        List<Callable<Integer>> robotExecutors = allRobots.stream()
+        List<Callable<Robot>> robotExecutors = allRobots.stream()
                 .map(robot -> robot.getRobotExcutor())
-                .map(executor -> (Callable<Integer>) executor)
+                .map(executor -> (Callable<Robot>) executor)
                 .collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
         return robotExecutors;
     }
@@ -98,28 +101,15 @@ public class Controller<S extends Shape, P extends ProgrammableObject> {
      * multithread
      * @return true se la computazione è terminata correttamente.
      */
-//    public boolean runNextRobotCommand() {
-//        ExecutorService executor = Executors.newCachedThreadPool();
-//            try {
-//                List<Future<Integer>> futures =  executor.invokeAll(executors);
-//                for (Future<Integer> future : futures) {
-//                    future.get();}
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            } catch (ExecutionException e) {
-//                throw new RuntimeException(e);
-//            } finally {
-//                executor.shutdown();
-//                return true;
-//            }
-//    }
-
     public boolean runNextRobotCommand() {
         ExecutorService executor = Executors.newCachedThreadPool();
             try {
-                List<Future<Integer>> futures =  executor.invokeAll(executors);
-                for (Future<Integer> future : futures) {
-                    future.get();}
+                List<Future<Robot>> futures =  executor.invokeAll(executors);
+                for (Future<Robot> future : futures) {
+                    Robot robot = future.get();
+                    resetLable(robot);
+                    checkShape(robot, environment);
+                }
             } catch (InterruptedException e) {
                 e.printStackTrace();
             } catch (ExecutionException e) {
@@ -140,7 +130,6 @@ public class Controller<S extends Shape, P extends ProgrammableObject> {
         return shapeLoader.loadShapes();
     }
 
-    //TODO VERIFICARE UTILITà DI QUESTI DUE
     /**
      * Ritorna i robots instanziati sulla scena corrente
      * @return robots una lista dei robot presenti nell'ambiente
@@ -151,5 +140,17 @@ public class Controller<S extends Shape, P extends ProgrammableObject> {
      * Ritorna i robots instanziati sulla scena corrente
      * @return robots una lista dei robot presenti nell'ambiente
      */
-    public List<Shape>getShapes(){ return this.environment.getShapesInSpace();}
+    public List<Shape>getShapes(){ return environment.getShapesInSpace();}
+
+
+    public synchronized static void checkShape(Robot robot, Environment environment) {
+        List<Shape> shapes = environment.getShapesInSpace();
+        TwoDimensionalPoint positionToCheck = robot.getPosition();
+        shapes.stream().filter(shape -> shape.isInternal(positionToCheck))
+                .forEach(internalShape -> RobotLanguageAtomicConstructs.signal(internalShape.getLabel(), robot));
+    }
+
+    private void resetLable(Robot robot){RobotLanguageAtomicConstructs.unsignal(robot);}
+
+
 }

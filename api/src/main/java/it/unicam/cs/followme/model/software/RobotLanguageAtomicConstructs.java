@@ -123,10 +123,4 @@ import java.util.stream.Stream;
             return  neighbours.mapToDouble(t->t.getPosition().getY()).average().orElse(0.0);
         }
 
-    public synchronized static void checkShape(Robot robot, BidimensionalSpace environment) {
-        List<Shape> shapes = environment.getShapesInSpace();
-        TwoDimensionalPoint positionToCheck = robot.getPosition();
-        shapes.stream().filter(shape -> shape.isInternal(positionToCheck))
-                .forEach(internalShape -> RobotLanguageAtomicConstructs.signal(internalShape.getLabel(), robot));
-    }
 }

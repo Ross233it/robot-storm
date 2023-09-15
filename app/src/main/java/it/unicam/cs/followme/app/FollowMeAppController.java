@@ -2,10 +2,11 @@ package it.unicam.cs.followme.app;
 
 
 
+import it.unicam.cs.followme.controller.Controller;
+import it.unicam.cs.followme.controller.RobotExecutorController;
 import it.unicam.cs.followme.model.common.TwoDimensionalPoint;
 import it.unicam.cs.followme.model.environment.StaticCircle;
 import it.unicam.cs.followme.model.environment.StaticRectangle;
-import it.unicam.cs.followme.model.hardware.ProgrammableObject;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
@@ -33,9 +34,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
-import javafx.scene.layout.StackPane;
 
-import it.unicam.cs.followme.controller.Controller;
 import it.unicam.cs.followme.model.environment.Shape;
 import it.unicam.cs.followme.model.hardware.Robot;
 
@@ -94,7 +93,7 @@ public class FollowMeAppController{
     @FXML
     public void initialize() {
         this.axes = new CartesianAxisManager(40, cartesian);
-        Supplier<Controller> instance = Controller::new;
+        Supplier<Controller> instance = RobotExecutorController::new;
         this.controller = instance.get();
     }
 
@@ -346,10 +345,10 @@ public class FollowMeAppController{
      */
     public void addRectangle(StaticRectangle<TwoDimensionalPoint> staticRectangle, Group cartesian){
          Rectangle sceneRectangle = new Rectangle(
-                (getSceneX(staticRectangle, axes) - (scaleToScene(staticRectangle.getWidth(), axes)/2)),
-                (getSceneY(staticRectangle, axes) + (scaleToScene(staticRectangle.getHeight(),axes)/2)),
-                scaleToScene(staticRectangle.getWidth(), axes),
-                scaleToScene(staticRectangle.getHeight(), axes)
+                getSceneX(staticRectangle, axes) - (scaleToScene(staticRectangle.getWidth(), axes)/2),
+                 getSceneY(staticRectangle, axes) - (scaleToScene(staticRectangle.getHeight(),axes)/2),
+                 scaleToScene(staticRectangle.getWidth(), axes),
+                 scaleToScene(staticRectangle.getHeight(), axes)
         );
         sceneRectangle.setOpacity(0.5);
         sceneRectangle.setFill(Color.BLUE);
@@ -385,21 +384,6 @@ public class FollowMeAppController{
      */
     private static Double scaleToScene(Double misure, CartesianAxisManager axes){
         return misure * axes.getTickSize();
-    }
-
-    public void addLabelToShape(javafx.scene.shape.Shape shape, String shapeLabel) {
-        Label label = new Label(shapeLabel);
-        StackPane stackPane = new StackPane();
-        stackPane.getChildren().addAll(shape, label);
-
-        // Imposta la posizione della Label nel StackPane (puoi personalizzare la posizione a tuo piacimento)
-      //  StackPane.setTranslateX(); // Esempio: sposta la Label 20 pixel a destra
-       // StackPane.setTranslateY(label, -20); // Esempio: sposta la Label 20 pixel verso l'alto
-
-        // Aggiungi il StackPane (con il Circle e la Label) al contenitore desiderato nella tua GUI
-        // Ad esempio, se hai un Pane chiamato "root" nella tua GUI, puoi aggiungerlo così:
-
-        cartesian.getChildren().add(stackPane);
     }
 
 

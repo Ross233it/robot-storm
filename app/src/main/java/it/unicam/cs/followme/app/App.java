@@ -1,14 +1,11 @@
 package it.unicam.cs.followme.app;
 
-import it.unicam.cs.followme.controller.Controller;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Objects;
 
 public class App extends Application{

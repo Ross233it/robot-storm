@@ -14,10 +14,10 @@ import java.util.List;
 import java.util.concurrent.Callable;
 
 /**
- * Il RobotProgramExecutor ha la responsabilità di
- * recepire un comando e lanciare la conseguente azione del robot.
+ * Ricevuto un comando il RobotProgramExecutor ha la responsabilità di
+ * lanciare la conseguente azione del robot.
  */
-public class RobotProgramExecutor<T> implements ProgramExecutor, Callable<Integer> {
+public class RobotProgramExecutor<T> implements ProgramExecutor, Callable<Robot> {
     private final Robot robot;
     private final RobotLanguageLoopConstructs loops;
     private final ArrayList<ProgramCommand> program;
@@ -41,16 +41,10 @@ public class RobotProgramExecutor<T> implements ProgramExecutor, Callable<Intege
      * da eseguire ed i parametri necessari dal comando e ne lancia l'esecuzione. Lancia un comando
      * per ogni unità di tempo.
      */
-    public Integer call(){
+    public Robot call(){
         if(currentCommandIndex <= program.size()-1) {
-
                 ProgramCommand currentCommand = program.get(currentCommandIndex);
                 String instruction = currentCommand.getInstruction().trim().replace(" ", "").toLowerCase();
-
-                RobotLanguageAtomicConstructs.checkShape(robot, environment);
-                //todo remove print
-                printThings(currentCommand);
-
                 switch (instruction) {
                     case "repeat"   -> handleRepeatCommand(currentCommand);
                     case "doforever"-> handleDoForeverCommand(currentCommand);
@@ -60,7 +54,7 @@ public class RobotProgramExecutor<T> implements ProgramExecutor, Callable<Intege
                     default         -> handleDefaultCommand(instruction, currentCommand);
                 }
             }
-        return 1;
+        return robot;
       }
 
 
@@ -143,17 +137,9 @@ public class RobotProgramExecutor<T> implements ProgramExecutor, Callable<Intege
                                                                  this.robot.getLabel()));
     }
 
+
     @Override
     public void executeProgram() {
         call();
-    }
-
-
-    //todo remove methodd
-    private void printThings(ProgramCommand currentCommand){
-        System.out.println("Thread : " +Thread.currentThread().getId());
-        System.out.println("CURRENT PROGRAM INDEX : " + currentCommandIndex);
-        System.out.println("LUNGHEZZA PROGRAMMA : "   + program.size());
-        System.out.println("ISTRUZIONE : "   + currentCommand.getInstruction());
     }
 }
