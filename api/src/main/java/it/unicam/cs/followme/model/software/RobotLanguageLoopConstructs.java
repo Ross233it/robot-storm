@@ -14,7 +14,6 @@ import java.util.List;
  */
 
 public class RobotLanguageLoopConstructs {
-
     private Integer repetitionCount;
     private Integer toRepeatCommandIndex;
     private Integer foreverFirstCommandIndex;
@@ -33,6 +32,8 @@ public class RobotLanguageLoopConstructs {
         this.untilCommandIndex = currentCommandIndex;
         return currentCommandIndex+1;
     }
+
+    public void skipUntil(){ this.untilCommandIndex = null;}
 
     /**
      * Il comando doForever registra la prima posizione dei comandi che devono essere
@@ -64,13 +65,10 @@ public class RobotLanguageLoopConstructs {
             repetitionCount--;
             return toRepeatCommandIndex;
         }
-
         if ( foreverFirstCommandIndex != null && foreverFirstCommandIndex >= 0)
              return foreverFirstCommandIndex;
-
         if(untilCommandIndex != null && untilCommandIndex >=0)
              return untilCommandIndex;
-
         return currentCommandIndex+1;
     }
 }

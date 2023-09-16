@@ -1,8 +1,14 @@
 package it.unicam.cs.followme.model.common;
 
+import it.unicam.cs.followme.model.environment.Environment;
+import it.unicam.cs.followme.model.environment.Shape;
 import it.unicam.cs.followme.model.hardware.ProgrammableObject;
 import it.unicam.cs.followme.model.hardware.Robot;
+import it.unicam.cs.followme.model.software.RobotLanguageAtomicConstructs;
+
 import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 import java.util.stream.Stream;
 
@@ -120,4 +126,20 @@ public class Utilities {
         return new TwoDimensionalPoint(newX+((TwoDimensionalPoint) programmable.getPosition()).getX(),
                 newY+((TwoDimensionalPoint) programmable.getPosition()).getY());
     }
+
+    /**
+     * Verifica se un robot è all'interno di una delle forme dell'environment
+     * @param robot il robot di cui valutare la posizione
+     * @param environment l'ambiente corrente in cui si trova il robot.
+     */
+    public synchronized static void checkShape(Robot robot, Environment environment) {
+        List<Shape> shapes = environment.getShapesInSpace();
+        TwoDimensionalPoint positionToCheck = robot.getPosition();
+        shapes.stream().filter(shape -> shape.isInternal(positionToCheck))
+                .forEach(internalShape -> RobotLanguageAtomicConstructs.signal(internalShape.getLabel(), robot));
+        shapes.stream().filter(shape -> !shape.isInternal(positionToCheck))
+                .forEach(internalShape -> RobotLanguageAtomicConstructs.unsignal(internalShape.getLabel(), robot));
+    }
+
+
 }

@@ -37,6 +37,8 @@ import java.util.stream.Stream;
          * @param programmable ammessi oggetti programmabili
          */
         public static  void moverandom(double[] args, ProgrammableObject programmable){
+
+            System.out.println("io sono move random");
             double[] xRange = Utilities.sortTwoDouble(args[0], args[1]);
             double[] yRange = Utilities.sortTwoDouble(args[2], args[3]);
             args[0] = Utilities.randomScaledNumber(xRange[0],  xRange[1]);
@@ -61,8 +63,10 @@ import java.util.stream.Stream;
          * la sua label
          * @param programmable il programmabile destinatario del comando
          */
-        public static void unsignal( ProgrammableObject programmable){
-            programmable.setLabel("");
+        public static void unsignal(String labelToCheck, ProgrammableObject programmable){
+
+            if(labelToCheck.equals(programmable.getLabel()))
+                programmable.setLabel("");
         }
 
 
@@ -79,9 +83,7 @@ import java.util.stream.Stream;
             double distanceToCheck = args[0];
             Stream<Robot>neighbours = environment.getNeighbours(robot.getPosition(), labelToCheck, distanceToCheck);
             Double newX = Utilities.averageX(neighbours) != 0 ? Utilities.averageX(neighbours) : Utilities.randomScaledNumber(-distanceToCheck, distanceToCheck);
-            System.out.println(robot.getId() +" newX " + newX);
             Double newY = Utilities.averageY(neighbours) != 0 ? Utilities.averageY(neighbours) : Utilities.randomScaledNumber(-distanceToCheck, distanceToCheck);
-            System.out.println(robot.getId() + " newY " + newX);
             double[] param = {newX,  newY, args[2]};
             move(param, robot);
         }

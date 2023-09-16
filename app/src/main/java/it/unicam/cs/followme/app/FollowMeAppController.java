@@ -24,6 +24,7 @@ import javafx.stage.Stage;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -44,8 +45,8 @@ public class FollowMeAppController{
     private Controller controller;
     private List<Robot>currentRobots;
     private List<Shape>currentShapes;
-    private Path programPath;
-    private Path environmentPath;
+    private Path programPath = Paths.get(System.getProperty("user.dir"), "src", "main", "resources", "assets", "defaultProgram.txt");
+    private Path environmentPath =  Paths.get(System.getProperty("user.dir"), "src", "main", "resources", "assets", "defaultEnvironment.txt");;
     private int robotNumber;
     private int timeUnit;
     private int currentTime;
@@ -149,8 +150,12 @@ public class FollowMeAppController{
      */
     public void simSetup(File programFile, File environmentFile, int robotNumber, int timeUnit, int simDuration){
         this.timeUnit = timeUnit;
-        this.environmentPath = environmentFile.toPath();
-        this.programPath = programFile.toPath();
+        if(environmentFile != null)
+            this.environmentPath = environmentFile.toPath();
+
+        if(programFile != null)
+            this.programPath = programFile.toPath();
+
         controller.simulationSetup(robotNumber,30.0,  programPath, environmentPath);
         this.currentRobots = controller.getRobots();
         this.currentShapes = controller.getShapes();
@@ -213,13 +218,11 @@ public class FollowMeAppController{
 
     /**
      * Avvicina il punto di vista di osservazione.
-     * @param scale la scala attuale di visualizzazione.
      */
     private void zoomIn() {rebuildScene(axes.getScale()-10);}
 
     /**
      * Allontana il punto di vista di osservazione.
-     * @param scale la scala attuale di visualizzazione.
      */
     private void zoomOut() {rebuildScene(axes.getScale()+10);}
 
@@ -298,20 +301,20 @@ public class FollowMeAppController{
     }
 
     /**
-     * Converte una generica X nella scala dell'interfaccia grafica
-     * @param shape
-     * @param axes
-     * @return
+     * Converte la x di una forma nella scala dell'interfaccia grafica
+     * @param shape la forma di cui scalare la posizione
+     * @param axes gli assi cartesiani di riferimento
+     * @return misura proporzionata alla scala degli assi
      */
     private Double getSceneX(Shape<TwoDimensionalPoint> shape, CartesianAxisManager axes){
         return AXES_ZERO + (shape.getPosition().getX() * axes.getTickSize());
     }
 
     /**
-     * Converte una generica y nella scala dell'interfaccia grafica
-     * @param shape
-     * @param axes
-     * @return
+     * Converte la y di una forma nella scala dell'interfaccia grafica
+     * @param shape la forma di cui scalare la posizione
+     * @param axes gli assi cartesiani di riferimento
+     * @return misura proporzionata alla scala degli assi
      */
     private Double getSceneY(Shape<TwoDimensionalPoint> shape, CartesianAxisManager axes){
         return AXES_ZERO - (shape.getPosition().getY() * axes.getTickSize());
@@ -320,9 +323,9 @@ public class FollowMeAppController{
     /**
      * Presa una misura come parametro la restituisce nella scala del piano cartesiano
      * corrente.
-     * @param misure
-     * @param axes
-     * @return
+     * @param misure la forma di cui scalare la posizione
+     * @param axes gli assi cartesiani di riferimento
+     * @return misura proporzionata alla scala degli assi
      */
     private Double scaleToScene(Double misure, CartesianAxisManager axes){
         return misure * axes.getTickSize();

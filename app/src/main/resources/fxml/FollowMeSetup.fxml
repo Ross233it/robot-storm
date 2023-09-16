@@ -12,7 +12,7 @@
             <Label layoutX="36.0" layoutY="112.0" styleClass="labelStyle" text="Numero Robot da generare" />
             <Label layoutX="36.0" layoutY="164.0" styleClass="labelStyle" text="Velocità simulazione (in millisecondi)" />
             <Label layoutX="36.0" layoutY="362.0" styleClass="labelStyle" text="Seleziona File dell'ambiente" />
-            <TextField fx:id="robotNumberField" alignment="CENTER_RIGHT" layoutX="616.0" layoutY="97.0" onAction="#getRobotsNumber" prefHeight="30.0" prefWidth="120.0" text="10">
+            <TextField fx:id="robotNumberField" alignment="CENTER_RIGHT" layoutX="616.0" layoutY="97.0" onAction="#getRobotsNumber" prefHeight="30.0" prefWidth="120.0" text="20">
                <font>
                   <Font size="24.0" />
                </font></TextField>
@@ -25,7 +25,7 @@
             <Button fx:id="environmentLoaderButton" alignment="CENTER_RIGHT" layoutX="522.0" layoutY="361.0" mnemonicParsing="false" onAction="#selectEnvironmentFile" text="Seleziona File Ambiente" />
             <Button fx:id="programLoaderButton" alignment="CENTER_RIGHT" layoutX="477.0" layoutY="418.0" mnemonicParsing="false" onAction="#selectProgramFile" text="Seleziona Programma Robots" />
             <Label layoutX="36.0" layoutY="257.0" styleClass="labelStyle" text="Durata della simulaizone (in cicli temporali)" />
-            <TextField fx:id="simDurationField" alignment="CENTER_RIGHT" layoutX="616.0" layoutY="250.0"  prefHeight="30.0" prefWidth="120.0" text="10">
+            <TextField fx:id="simDurationField" alignment="CENTER_RIGHT" layoutX="616.0" layoutY="250.0"  prefHeight="30.0" prefWidth="120.0" text="20">
                <font>
                   <Font size="24.0" />
                </font>

@@ -14,13 +14,6 @@ dependencies {
     implementation project(':api')
 }
 
-//sourceSets {
-//    main {
-//        resources {
-//            srcDirs = ['app/src/main/resources']
-//        }
-//    }
-//}
 
 javafx {
     version = "18"
@@ -30,6 +23,5 @@ javafx {
 
 
 application {
-    // Define the main class for the application.
     mainClass = 'it.unicam.cs.followme.app.App'
 }

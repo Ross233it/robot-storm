@@ -1,12 +1,18 @@
 package it.unicam.cs.followme.model.software;
 
 import it.unicam.cs.followme.io.ProgramLoader;
+import it.unicam.cs.followme.model.common.TwoDimensionalPoint;
+import it.unicam.cs.followme.model.common.Utilities;
 import it.unicam.cs.followme.model.environment.BidimensionalSpace;
+import it.unicam.cs.followme.model.environment.Environment;
+import it.unicam.cs.followme.model.environment.Shape;
 import it.unicam.cs.followme.model.hardware.ProgrammableObject;
 import it.unicam.cs.followme.model.hardware.Robot;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.Callable;
 
 /**
@@ -17,7 +23,8 @@ public class RobotProgramExecutor<T> implements ProgramExecutor, Callable<Robot>
     private final Robot robot;
     private final RobotLanguageLoopConstructs loops;
     private final ArrayList<ProgramCommand> program;
-    private final BidimensionalSpace environment = BidimensionalSpace.getInstance();
+    //private final BidimensionalSpace environment = BidimensionalSpace.getInstance();
+    private BidimensionalSpace environment;
     private Integer currentCommandIndex = 0;
 
 
@@ -38,6 +45,8 @@ public class RobotProgramExecutor<T> implements ProgramExecutor, Callable<Robot>
      * per ogni unità di tempo.
      */
     public Robot call(){
+        List<Shape> shapes = this.environment.getShapesInSpace();
+        System.out.println("lunghezza shape " + shapes.size());
         if(currentCommandIndex <= program.size()-1) {
                 ProgramCommand currentCommand = program.get(currentCommandIndex);
                 System.out.println("COMANDO " + currentCommand.getInstruction());
@@ -54,7 +63,6 @@ public class RobotProgramExecutor<T> implements ProgramExecutor, Callable<Robot>
             }
         return robot;
       }
-
 
     /**
      * Avvia il comando repeat
@@ -85,7 +93,12 @@ public class RobotProgramExecutor<T> implements ProgramExecutor, Callable<Robot>
      * @param command il comando da eseguire {@link ProgramCommand}
      */
     private void handleUntilCommand(ProgramCommand command) {
-        currentCommandIndex = loops.until(currentCommandIndex, command.getParameter(), environment.getShapesInSpace(), robot.getPosition());
+        System.out.println("IO SONO IL PARAMETRO DI UNTIL" + command.getParameter());
+
+        if(!checkShape((String) command.getParameter()))
+            currentCommandIndex = loops.until(currentCommandIndex, command.getParameter(), environment.getShapesInSpace(), robot.getPosition());
+        else
+            loops.skipUntil();
     }
 
     /**
@@ -94,6 +107,7 @@ public class RobotProgramExecutor<T> implements ProgramExecutor, Callable<Robot>
      */
     private void handleFollowCommand(ProgramCommand command) {
          RobotLanguageAtomicConstructs.follow(command.getMultipleParameters(), environment, this.robot);
+         this.currentCommandIndex++;
     }
 
     /**
@@ -103,6 +117,9 @@ public class RobotProgramExecutor<T> implements ProgramExecutor, Callable<Robot>
     private void handleDefaultCommand(String instruction, ProgramCommand command) {
         callMethod(instruction, command.getParameter());
     }
+
+    @Override
+    public void executeCommand() { call();}
 
     /**
      * Richiama il metodo appropriato in relazione all'istruzione passata come argomento.
@@ -123,8 +140,18 @@ public class RobotProgramExecutor<T> implements ProgramExecutor, Callable<Robot>
         }
     }
 
-    @Override
-    public void executeProgram() {
-        call();
+    public  boolean checkShape(String labelToCheck) {
+        List<Shape> shapes = environment.getShapesInSpace();
+        TwoDimensionalPoint positionToCheck = robot.getPosition();
+        System.out.println(shapes.size());
+        System.out.println(positionToCheck.getX());
+
+        Optional<Shape> firstShape = shapes.stream().filter(shape -> shape.isInternal(positionToCheck)).findFirst();
+        /*  && robot.getLabel().equals(labelToCheck)*/
+        if (firstShape.isPresent()){
+            System.out.println("Ho trovato il robot " + robot.getId());return true;}
+        else{
+            System.out.println("Non trovato il robot " + robot.getId());
+            return false;}
     }
 }

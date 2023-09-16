@@ -34,9 +34,7 @@ public class ProgramLoader implements FollowMeParserHandler{
     }
 
     @Override
-    public void unsignalCommand(String label) {
-        this.commandList.add(new ProgramCommand<>("UNSIGNAL", label));
-    }
+    public void unsignalCommand(String label) {this.commandList.add(new ProgramCommand<>("UNSIGNAL", label));}
 
     @Override
     public void followCommand(String label, double[] args) {

@@ -8,5 +8,5 @@ public interface ProgramExecutor {
     /**
      * Il metodo che si occupa di avviare le istruzioni
      */
-    void executeProgram();
+    void executeCommand();
 }

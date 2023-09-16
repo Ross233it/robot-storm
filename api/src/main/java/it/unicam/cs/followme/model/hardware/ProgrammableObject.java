@@ -21,8 +21,8 @@ public interface ProgrammableObject<V, C> extends Positionable<C> {
     void setDirection(V vec);
 
     int getId();
-//
-//    C getPosition();
-//
-//    void setPosition(C pos);
+
+    C getPosition();
+
+    void setPosition(C pos);
 }

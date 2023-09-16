@@ -5,18 +5,20 @@ import javafx.geometry.Side;
 import javafx.scene.Group;
 import javafx.scene.chart.NumberAxis;
 
+/**
+ * Gestisce il sistema di assi cartesiani della GUI
+ */
 public class CartesianAxisManager {
     private NumberAxis xAxis;
     private NumberAxis yAxis;
     private Double tickSize;
     private Integer scale;
     private final Double SPACE_SQUARE = 700.0;
-
     private Group cartesian;
 
-    /**
-     * @param scale
-     * @param cartesian
+    /**Genera gli assi cartesiani
+     * @param scale scala dimensionale degli assi
+     * @param cartesian la posizione di destinazione nella GUI
      */
     public CartesianAxisManager(Integer scale, Group cartesian){
         this.cartesian = cartesian;
@@ -69,7 +71,6 @@ public class CartesianAxisManager {
         return yAxis;
     }
 
-
     /**
      * Aggiorna il valore assoluto di un tick degli assi
      * @param scale fattore moltiplicativo ad esempio di zoom
@@ -77,7 +78,6 @@ public class CartesianAxisManager {
     private void updateTickSize(Integer scale){
         this.tickSize = (SPACE_SQUARE/scale)/2;
     }
-
 
     /**
      * Aggiorna gli assi cartesiani presenti nella scena
@@ -91,7 +91,6 @@ public class CartesianAxisManager {
         this.yAxis = yAxis;
     }
 
-
     /**
      * Ritorna la dimensione assoluta del tick.
      */
@@ -101,12 +100,4 @@ public class CartesianAxisManager {
      * Ritorna la scala dimensionale degli assi
      */
     public Integer getScale(){return this.scale;}
-
-    public NumberAxis getxAxis() {
-        return xAxis;
-    }
-
-    public NumberAxis getyAxis() {
-        return yAxis;
-    }
 }

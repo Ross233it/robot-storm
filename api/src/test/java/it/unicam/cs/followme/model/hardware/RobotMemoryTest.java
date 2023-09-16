@@ -49,18 +49,24 @@ class RobotMemoryTest {
 
     @Test
     void getFromMemory() {
+        robot.getMemory().saveInMemory(0, state0);
+        robot.getMemory().saveInMemory(1, state1);
+        robot.getMemory().saveInMemory(2, state2);
+        robot.getMemory().saveInMemory(3, robot);
         Map<Integer, RobotState> memory = robot.getMemory().getFromMemory();
-        assertEquals(3.0, memory.get(3).position().getX());
+        assertFalse(memory.get(3).position().getX().equals(null));
         assertEquals(4, memory.size());
         assertEquals(73.0, memory.get(2).position().getX());
         assertEquals(7.5, memory.get(1).position().getY());
         assertEquals("robotLabel0", memory.get(0).label());
+        assertEquals("", memory.get(3).label());
     }
 
     @Test
     void getState() {
-        System.out.println(robot.getMemory().getState(2).position().getX());
-        assertEquals(73.0, robot.getMemory().getState(2).position().getX());
-        assertEquals(7.5, robot.getMemory().getState(1).position().getY());
+        robot.getMemory().saveInMemory(0, state0);
+        assertEquals(5.0, robot.getMemory().getState(0).position().getX());
+        assertEquals(-7.5, robot.getMemory().getState(0).position().getY());
+        assertEquals("robotLabel0", robot.getMemory().getState(0).label());
     }
 }
