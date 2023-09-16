@@ -73,14 +73,4 @@ public class RobotLanguageLoopConstructs {
 
         return currentCommandIndex+1;
     }
-
-//TODO VERIFICARE LA POSIZIONE MIGLIORE PER QUESTO METODO
-    private static boolean checkShape(String labelToCheck,
-                               List<Shape>shapes,
-                               TwoDimensionalPoint positionToCheck){
-        return   shapes.stream()
-                .filter(s->s.getLabel().equals(labelToCheck))
-                .filter(s->s.isInternal(positionToCheck))
-                .findFirst().isPresent();
-    }
 }

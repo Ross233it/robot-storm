@@ -24,7 +24,7 @@
             <Button fx:id="simulationStartButton" alignment="CENTER_RIGHT" layoutX="568.0" layoutY="511.0" mnemonicParsing="false" onAction="#startSimulation" text="Avvia Simulazione" />
             <Button fx:id="environmentLoaderButton" alignment="CENTER_RIGHT" layoutX="522.0" layoutY="361.0" mnemonicParsing="false" onAction="#selectEnvironmentFile" text="Seleziona File Ambiente" />
             <Button fx:id="programLoaderButton" alignment="CENTER_RIGHT" layoutX="477.0" layoutY="418.0" mnemonicParsing="false" onAction="#selectProgramFile" text="Seleziona Programma Robots" />
-            <Label layoutX="36.0" layoutY="257.0" styleClass="labelStyle" text="Seleziona la durata della simulaizone (in cicli temporali)" />
+            <Label layoutX="36.0" layoutY="257.0" styleClass="labelStyle" text="Durata della simulaizone (in cicli temporali)" />
             <TextField fx:id="simDurationField" alignment="CENTER_RIGHT" layoutX="616.0" layoutY="250.0"  prefHeight="30.0" prefWidth="120.0" text="10">
                <font>
                   <Font size="24.0" />

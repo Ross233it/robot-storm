@@ -40,6 +40,7 @@ public class RobotProgramExecutor<T> implements ProgramExecutor, Callable<Robot>
     public Robot call(){
         if(currentCommandIndex <= program.size()-1) {
                 ProgramCommand currentCommand = program.get(currentCommandIndex);
+                System.out.println("COMANDO " + currentCommand.getInstruction());
                 String instruction = currentCommand.getInstruction().trim().replace(" ", "").toLowerCase();
                 switch (instruction) {
                     case "repeat"   -> handleRepeatCommand(currentCommand);
