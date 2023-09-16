@@ -16,9 +16,9 @@ class RobotTest {
     @BeforeEach
     void setup(){
         ProgramLoader program = new ProgramLoader();
-        TwoDimensionalPoint newPosition= new TwoDimensionalPoint(20.0, 50.0);
+        TwoDimensionalPoint newPosition= new TwoDimensionalPoint(20.0, 25.0);
         this.positionedRobot =  new Robot(newPosition, 2, program);
-        this.rangeRobot = new Robot(20.0, 1, program);
+        this.rangeRobot = new Robot(15.0, 1, program);
     }
 
     @Test
@@ -26,13 +26,13 @@ class RobotTest {
     void getPosition() {
         assertTrue(rangeRobot.getPosition().getX()<= 20 &&
                 rangeRobot.getPosition().getX() >= -20 &&
-                rangeRobot.getPosition().getY() <=  20 &&
-                rangeRobot.getPosition().getY() >= -20);
+                rangeRobot.getPosition().getY() <=  25 &&
+                rangeRobot.getPosition().getY() >= -25);
 
         assertEquals(20, positionedRobot.getPosition().getX());
-        assertEquals(50, positionedRobot.getPosition().getY());
+        assertEquals(25, positionedRobot.getPosition().getY());
 
-        TwoDimensionalPoint testPosition = new TwoDimensionalPoint(20.0,50.0);
+        TwoDimensionalPoint testPosition = new TwoDimensionalPoint(20.0,25.0);
         assertTrue(testPosition.equals(positionedRobot.getPosition()));
     }
 
@@ -85,6 +85,5 @@ class RobotTest {
         TwoDimensionalPoint newPosition = new TwoDimensionalPoint(5.0,-3.0);
         positionedRobot.setPosition(newPosition);
         assertEquals(newPosition, positionedRobot.getPosition());
-
     }
 }

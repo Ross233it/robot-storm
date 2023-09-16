@@ -1,7 +1,6 @@
 package it.unicam.cs.followme.model.software;
 
 import it.unicam.cs.followme.model.common.TwoDimensionalPoint;
-import it.unicam.cs.followme.model.common.Utilities;
 import it.unicam.cs.followme.model.environment.Shape;
 
 import java.util.List;
@@ -33,7 +32,9 @@ public class RobotLanguageLoopConstructs {
         return currentCommandIndex+1;
     }
 
-    public void skipUntil(){ this.untilCommandIndex = null;}
+    public Integer skipUntil(Integer currentCommandIndex){
+        this.untilCommandIndex = null;
+        return currentCommandIndex+1;}
 
     /**
      * Il comando doForever registra la prima posizione dei comandi che devono essere
@@ -69,6 +70,6 @@ public class RobotLanguageLoopConstructs {
              return foreverFirstCommandIndex;
         if(untilCommandIndex != null && untilCommandIndex >=0)
              return untilCommandIndex;
-        return currentCommandIndex+1;
+       return currentCommandIndex+1;
     }
 }

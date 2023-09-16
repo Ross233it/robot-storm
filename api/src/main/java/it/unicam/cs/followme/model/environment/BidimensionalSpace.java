@@ -19,7 +19,6 @@ public class BidimensionalSpace<S extends Shape, P extends ProgrammableObject> i
 
     private  List<P> programmablesInSpace;
     private  List<S> shapesInSpace;
-    private  static BidimensionalSpace instance;
 
     /**
      * Costruisce uno spazio bidimensionale cui assegna oggetti programmabili e statici
@@ -40,15 +39,6 @@ public class BidimensionalSpace<S extends Shape, P extends ProgrammableObject> i
         this.shapesInSpace        = new ArrayList<>();
     }
 
-    /**
-     * Ritorna un'istanza della classe ambiente.Singleton implementation
-     * @return
-     */
-    public static synchronized BidimensionalSpace getInstance() {
-        if (instance == null)
-            instance = new BidimensionalSpace();
-        return instance;
-    }
     /**
      * Ritorna una collezione di tutti gli oggetti attualmente presenti nello spazio
      * @return programmableOnSpace tutti gli oggetti programmabili nello spazio

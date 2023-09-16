@@ -37,14 +37,12 @@ import java.util.stream.Stream;
          * @param programmable ammessi oggetti programmabili
          */
         public static  void moverandom(double[] args, ProgrammableObject programmable){
-
-            System.out.println("io sono move random");
             double[] xRange = Utilities.sortTwoDouble(args[0], args[1]);
             double[] yRange = Utilities.sortTwoDouble(args[2], args[3]);
-            args[0] = Utilities.randomScaledNumber(xRange[0],  xRange[1]);
-            args[1] = Utilities.randomScaledNumber(yRange[0],  yRange[1]);
-            args[2] = args[4];
-            move(args, programmable);
+            double x = Utilities.randomScaledNumber(xRange[0],  xRange[1]);
+            double y = Utilities.randomScaledNumber(yRange[0],  yRange[1]);
+            double[] newArgs = {x,y,  args[4]};
+            move(newArgs, programmable);
         }
 
         /**

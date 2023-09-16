@@ -11,7 +11,6 @@ public class StaticCircle<C extends Coordinates> implements Shape<TwoDimensional
     private String label;
     private final Double radius;
 
-
     /**
      * Crea una forma di tipo StaticCircle
      * @param position la posizione del centro della circonferenza

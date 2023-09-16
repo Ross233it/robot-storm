@@ -1,5 +1,6 @@
 package it.unicam.cs.followme.model.common;
 
+import it.unicam.cs.followme.model.environment.BidimensionalSpace;
 import it.unicam.cs.followme.model.environment.Environment;
 import it.unicam.cs.followme.model.environment.Shape;
 import it.unicam.cs.followme.model.hardware.ProgrammableObject;
@@ -36,8 +37,11 @@ public class Utilities {
      * @return randomNumber un numero in virgola mobile compreso tra -1 e +1
      */
     public static Double randomDoubleNumber (Double minValue, Double maxValue){
+        if (minValue == null || maxValue == null) {
+            throw new NullPointerException("minValue e maxValue non possono essere null");
+        }
         Random random = new Random();
-        Double randomNumber = random.nextDouble(maxValue-minValue+1)+minValue;
+        double randomNumber = random.nextDouble()*(maxValue-minValue)+minValue;
         return randomNumber;
     }
 
@@ -48,8 +52,11 @@ public class Utilities {
      * @param maxValue limite superiore
      * @return randomNumber un numero in virgola mobile compreso tra -1 e +1
      */
-    public static Double randomScaledNumber (Double minValue, Double maxValue){
-        Double randomNumber = randomDoubleNumber(minValue, maxValue);
+    public static double randomScaledNumber (Double minValue, Double maxValue){
+        if (minValue == null || maxValue == null) {
+            throw new NullPointerException("minValue e maxValue non possono essere null");
+        }
+        double randomNumber = randomDoubleNumber(minValue, maxValue);
         return ((randomNumber-minValue)/(maxValue-minValue))*2-1;
     }
 
@@ -67,9 +74,9 @@ public class Utilities {
 
     /**
      * Calcola la diagonale rispetto a due lati di un rettangolo
-     * @param x
-     * @param y
-     * @return
+     * @param x un lato dell'angolo retto
+     * @param y il secondo lato dell'angolo retto
+     * @return il valore della diagonale del rettangolo dato
      */
     public static double getDiagonal(double x, double y) {
         double diagonal = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
@@ -141,5 +148,21 @@ public class Utilities {
                 .forEach(internalShape -> RobotLanguageAtomicConstructs.unsignal(internalShape.getLabel(), robot));
     }
 
-
+    /**
+     * Verifica se un robot si trova all'interno di una forma
+     * @param robot il programmabile dd verificare
+     * @param labelToCheck la label da verificare
+     * @param environment l'ambiente della simulazione corrente
+     * @return true se il robot si trova in una delle forme dell'ambiente.
+     */
+    public  static boolean checkShape(Robot robot, String labelToCheck, BidimensionalSpace environment) {
+        List<Shape> shapes = environment.getShapesInSpace();
+        TwoDimensionalPoint positionToCheck = robot.getPosition();
+        Optional<Shape> firstShape = shapes.stream()
+                .filter(shape -> shape.isInternal(positionToCheck)
+                        && robot.getLabel().equals(labelToCheck))
+                .findFirst();
+        if (firstShape.isPresent()) return true;
+        return false;
+    }
 }

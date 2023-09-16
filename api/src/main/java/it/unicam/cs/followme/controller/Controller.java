@@ -18,13 +18,13 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.*;
+import java.util.stream.Collectors;
 
 public class Controller<S extends Shape, P extends ProgrammableObject> {
 
     private ProgramLoader program;
     private final FollowMeParser parser;
     private BidimensionalSpace environment;
-    private List<Callable<Robot>> executors;
 
     /**
      * Metodo costruttore Controller
@@ -46,7 +46,6 @@ public class Controller<S extends Shape, P extends ProgrammableObject> {
         List<Shape> loadedShapes = shapesSetup(environmentPath);
         this.program = generateRobotProgram(programPath);
         this.environment = new BidimensionalSpace(currentRobots, loadedShapes);
-        this.executors = launchRobots();
     }
 
     /**
@@ -83,39 +82,25 @@ public class Controller<S extends Shape, P extends ProgrammableObject> {
     }
 
     /**
-     * Raccoglie in una struttura datii ProgramExecutors di tutti i robot presenti nell'ambiente
-     * @return robotExecutors lista di {@Link RobotProgramExecutor}
-     */
-    private List<Callable<Robot>> launchRobots() {
-        List<Robot> allRobots = this.environment.getProgrammableInSpace();
-        List<Callable<Robot>> robotExecutors = allRobots.stream()
-                .map(robot -> robot.getRobotExcutor())
-                .map(executor -> (Callable<Robot>) executor)
-                .collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
-        return robotExecutors;
-    }
-
-    /**
      * Avvia il {@link RobotProgramExecutor} per ciascun robot effettuando esecuzione
      * multithread.
      * @return true se la computazione è terminata correttamente.
      */
     public boolean runNextRobotCommand() {
-        ExecutorService executor = Executors.newCachedThreadPool();
-        try {
-            List<Future<Robot>> futures = executor.invokeAll(executors);
-            for (Future<Robot> future : futures) {
-                Robot robot = future.get();
-                Utilities.checkShape(robot, environment);
-            }
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            throw new RuntimeException(e);
-        } finally {
-            executor.shutdown();
-            return true;
+        List<CompletableFuture<Void>> futures = new ArrayList<>();
+        List<Robot> robots = this.environment.getProgrammableInSpace();
+        for (Robot robot : robots) {
+            CompletableFuture<Void> future = CompletableFuture.runAsync(() -> robot.getRobotExcutor().executeProgram(environment));
+            Utilities.checkShape(robot, environment);
+            futures.add(future);
         }
+        CompletableFuture<Void> allOf = CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]));
+        try {
+            allOf.get();
+            return true;
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();}
+        return false;
     }
 
     /**
