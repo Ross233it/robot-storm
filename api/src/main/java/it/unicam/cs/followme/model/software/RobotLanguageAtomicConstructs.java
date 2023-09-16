@@ -1,14 +1,11 @@
 package it.unicam.cs.followme.model.software;
 
 import it.unicam.cs.followme.model.common.SpeedVector;
-import it.unicam.cs.followme.model.common.TwoDimensionalPoint;
 import it.unicam.cs.followme.model.common.Utilities;
 import it.unicam.cs.followme.model.environment.BidimensionalSpace;
-import it.unicam.cs.followme.model.environment.Shape;
 import it.unicam.cs.followme.model.hardware.ProgrammableObject;
 import it.unicam.cs.followme.model.hardware.Robot;
 
-import java.util.List;
 import java.util.stream.Stream;
 
 /**
@@ -30,7 +27,7 @@ import java.util.stream.Stream;
             if(args.length == 0){speedVector = (SpeedVector) programmable.getDirection();}
             else{speedVector = new SpeedVector(args[0], args[1], args[2]);}
             programmable.setDirection(speedVector);
-            programmable.setPosition(calculateNewPosition(speedVector, programmable));
+            programmable.setPosition(Utilities.calculateNewPosition(speedVector, programmable));
         }
 
         /**
@@ -69,7 +66,7 @@ import java.util.stream.Stream;
         }
 
 
-    /**
+        /**
          * Verifica i programmabili vicini in un certo raggio e muove il robot destinatario della media
          * fra le x e le y dei vicini.
          * @param parameters label da verificare - distanza di pertinenza - velocità di movimento
@@ -81,9 +78,9 @@ import java.util.stream.Stream;
             double[] args = (double[]) parameters[1];
             double distanceToCheck = args[0];
             Stream<Robot>neighbours = environment.getNeighbours(robot.getPosition(), labelToCheck, distanceToCheck);
-            Double newX = averageX(neighbours) != 0 ? averageX(neighbours) : Utilities.randomScaledNumber(-distanceToCheck, distanceToCheck);
+            Double newX = Utilities.averageX(neighbours) != 0 ? Utilities.averageX(neighbours) : Utilities.randomScaledNumber(-distanceToCheck, distanceToCheck);
             System.out.println(robot.getId() +" newX " + newX);
-            Double newY = averageY(neighbours) != 0 ? averageY(neighbours) : Utilities.randomScaledNumber(-distanceToCheck, distanceToCheck);
+            Double newY = Utilities.averageY(neighbours) != 0 ? Utilities.averageY(neighbours) : Utilities.randomScaledNumber(-distanceToCheck, distanceToCheck);
             System.out.println(robot.getId() + " newY " + newX);
             double[] param = {newX,  newY, args[2]};
             move(param, robot);
@@ -96,31 +93,4 @@ import java.util.stream.Stream;
         public static void stop(Object empty, ProgrammableObject programmable){
             programmable.setPosition(programmable.getPosition());
         }
-
-        private static TwoDimensionalPoint calculateNewPosition(SpeedVector speedVector, ProgrammableObject programmable){
-            Double vector = Utilities.getDiagonal(speedVector.getX(), speedVector.getY());
-            Double newX = Utilities.getSideFromDiagonal(speedVector.getSpeed(), vector,  speedVector.getX());
-            Double newY = Utilities.getSideFromDiagonal(speedVector.getSpeed(), vector,  speedVector.getY());
-            return new TwoDimensionalPoint(newX+((TwoDimensionalPoint) programmable.getPosition()).getX(),
-                                           newY+((TwoDimensionalPoint) programmable.getPosition()).getY());
-        }
-
-        /**
-         * Calcola la posizione media di x su una serie di robot
-         * @param neighbours
-         * @return
-         */
-        private static double averageX(Stream<Robot> neighbours){
-            return  neighbours.mapToDouble(t->t.getPosition().getX()).average().orElse(0.0);
-        }
-
-        /**
-         * Calcola la posizione media di y su una serie di robot
-         * @param neighbours
-         * @return
-         */
-        private static double averageY(Stream<Robot> neighbours){
-            return  neighbours.mapToDouble(t->t.getPosition().getY()).average().orElse(0.0);
-        }
-
 }

@@ -81,10 +81,4 @@ public class ProgramLoader implements FollowMeParserHandler{
     public ArrayList<ProgramCommand> programOutput(){
         return this.commandList;
     }
-
-    /**
-     * Aggiunge uno specifico comando al programma
-     * @param command un {@link ProgramCommand} da aggiungere
-     */
-    public void addCommand(ProgramCommand command){this.commandList.add(command);}
 }

@@ -11,6 +11,10 @@ import java.util.List;
 
 import java.util.stream.Collectors;
 
+/**
+ * Questa classe ha il ruolo di creare le forme conformemente a quanto
+ * richiesto dalla simulazione partendo da un file di cui effettua il parsing.
+ */
 public class ShapeLoader {
     private final Path environmentPath;
     private final FollowMeParser parser;
@@ -24,7 +28,7 @@ public class ShapeLoader {
 
     /**
      * Recupera le forme e crea nuovi oggetti
-     * @return
+     * @return parsedSahpes una lista oggetti forma
      */
     public List<Shape> loadShapes() {
         List<ShapeData> parsedShapes = parseShapes();

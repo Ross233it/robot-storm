@@ -1,14 +1,16 @@
 package it.unicam.cs.followme.model.common;
 
+import it.unicam.cs.followme.model.hardware.ProgrammableObject;
+import it.unicam.cs.followme.model.hardware.Robot;
 import java.util.Arrays;
 import java.util.Random;
+import java.util.stream.Stream;
 
 /**
  * La classe raccoglie una serie di metodi statici di utilità per
  * operazioni ricorrenti all'interno dell'applicazione
  */
 public class Utilities {
-
 
     /**
      * Dato un punto del piano cartesiano verifica se è interno o esterno ad un cerchio di
@@ -68,7 +70,6 @@ public class Utilities {
         return diagonal;
     }
 
-
     /**
      * Calcola la posizione lungo uno degli assi in relazione alla diagonale di spostamento,
      * considerando che due rettangoli i cui lati minore e maggiore sono reciprocamente in prpoporizone
@@ -86,4 +87,37 @@ public class Utilities {
             throw new IllegalArgumentException("Il valore della diagonale non può essere zero");
     }
 
+    /** Robot position utilities*/
+    /**
+     * Calcola la posizione media di y su una serie di robot
+     * @param neighbours
+     * @return
+     */
+    public static double averageY(Stream<Robot> neighbours){
+        return  neighbours.mapToDouble(t->t.getPosition().getY()).average().orElse(0.0);
+    }
+
+    /**
+     * Calcola la posizione media di x su una serie di robot
+     * @param neighbours
+     * @return
+     */
+    public static double averageX(Stream<Robot> neighbours){
+        return  neighbours.mapToDouble(t->t.getPosition().getX()).average().orElse(0.0);
+    }
+
+    /**
+     * Determina in base a un vettore di movimento lo spostamento diagonale di un programmabile
+     * nella direzione di due coordinate x e y.
+     * @param speedVector vettore di movimento {@link SpeedVector}
+     * @param programmable oggetto programmabile {@link ProgrammableObject}
+     * @return newPosition nuova posizione sul piano {@link TwoDimensionalPoint}
+     */
+    public static TwoDimensionalPoint calculateNewPosition(SpeedVector speedVector, ProgrammableObject programmable){
+        Double vector = Utilities.getDiagonal(speedVector.getX(), speedVector.getY());
+        Double newX = Utilities.getSideFromDiagonal(speedVector.getSpeed(), vector,  speedVector.getX());
+        Double newY = Utilities.getSideFromDiagonal(speedVector.getSpeed(), vector,  speedVector.getY());
+        return new TwoDimensionalPoint(newX+((TwoDimensionalPoint) programmable.getPosition()).getX(),
+                newY+((TwoDimensionalPoint) programmable.getPosition()).getY());
+    }
 }
