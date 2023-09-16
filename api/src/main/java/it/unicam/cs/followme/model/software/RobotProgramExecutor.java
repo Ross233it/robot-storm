@@ -23,8 +23,8 @@ public class RobotProgramExecutor<T> implements ProgramExecutor, Callable<Robot>
     private final Robot robot;
     private final RobotLanguageLoopConstructs loops;
     private final ArrayList<ProgramCommand> program;
-    //private final BidimensionalSpace environment = BidimensionalSpace.getInstance();
-    private BidimensionalSpace environment;
+    private final BidimensionalSpace environment = BidimensionalSpace.getInstance();
+  //  private BidimensionalSpace environment;
     private Integer currentCommandIndex = 0;
 
 
